@@ -3,14 +3,14 @@
 {
   "manifest_version": 2,
 
-  "name": "Google Search Result Excluder",
-  "description": "This extension allows the user to exclude domains from search results.",
+  "name": "Test Chrome Extension",
+  "description": "Test Chrome Extension.",
   "version": "1.0",
 
   "browser_action": {
     "default_icon": "icon.png",
     "default_popup": "popup.html",
-    "default_title": "Google Search Result Excluder"
+    "default_title": "test test test"
   },
   "permissions": [
     "activeTab",

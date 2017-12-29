@@ -34,6 +34,8 @@ function getCurrentTabUrl(callback) {
     // "url" properties.
     console.assert(typeof url == 'string', 'tab.url should be a string');
 
+    console.log("test-chrome-extension");
+
     callback(url);
   });
 
