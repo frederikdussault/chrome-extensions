@@ -1,5 +1,7 @@
+
 const script = `
-function DevTools(opts = {}) {
+/* Wordpress Information Extension */
+function DevTools (opts = {}) {
 	// Check to see if things are working right. Being that this is recursive it's a little redundant.
 	// You can probably do better.
 	window.testFunc = function() {
@@ -19,66 +21,11 @@ function DevTools(opts = {}) {
 		unmonitorEvents(document.body);
 	}
 
-	window.wpInfo = function() {
-		alert('WP Info - yeah!!');
-	}
-
+	DevTools();
 }
-
-DevTools();
-
 `;
 
 let sElement = document.createElement('script');
-sElement.innerHTML = script;
-document.querySelector('head').appendChild(sElement);
-
-
-/* 
-document.addEventListener('DOMContentLoaded', () => {
-	// get body classes
-	var body = document.getElementsByTagName('body')[0];
-	var listInfoBtn = document.getElementsById('listInfoBtn');
-	var container = document.getElementsById('container');
-	
-	
-	listInfoBtn.addEventListener('click', () => {
-  
-  
-	  // FIXME: continue here
-  
-	  // h1 
-	  var newh1 = document.createElement("h1"); 
-	  newh1.appendChild( 
-		document.createTextNode("Information")
-	  );
-	  container.appendChild( newh1 );
-  
-	  // list them
-	  for ( cls of body.className.split(' ') ) {
-		console.log(cls);
-  
-		// display Wordpress edit url
-		logWPEditLink ( cls, "page-id-" );
-		logWPEditLink ( cls, "postid-" );
-  
-		function logWPEditLink ( classNameString, beginsWithString ) {
-		  if ( classNameString.includes( beginsWithString ) ) {
-			showLink( findId ( classNameString, beginsWithString ) );
-		  }
-		};
-  
-		function findId ( string, matchString ) {
-		  let pos = matchString.length - string.length
-		  return string.slice( pos );
-		};
-		
-		function showLink ( pageId ) {
-		  console.log( "  Page edit url: ");
-		  console.log( "  " + "https://www.texture.ca/wp-admin/post.php?post=" + pageId + "&action=edit" );            
-		};
-	  }
-	});
-  
-  });
-   */
+		sElement.setAttribute('id', 'WpInfoExt');
+		sElement.innerHTML = script;
+		document.querySelector('head').appendChild(sElement);  // script code execute at this moment
