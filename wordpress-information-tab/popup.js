@@ -36,6 +36,98 @@ document.addEventListener('DOMContentLoaded', () => {
 
   console.trace('RDM WpInfo ext: trace - addEventListener DOMContentLoaded');
 
+  // Variable definitions
+  const script = 
+  `/* RDM Worpress Information object */
+
+  let rdm = (function() {
+
+    let domain = window.location.origin;
+
+    return {
+      listBodyClass: function() {
+        let el = document.getElementsByTagName('body')[0];
+        let values = el.className.split(' ');
+        let valuesJoined = values.join(''); 
+
+        console.log( 'RDM - List of classes on body tag' );
+        if ( valuesJoined ) {
+          console.table( values );
+        } else {
+          console.log( '    No classes found' );
+        }
+      },
+  
+      listHtmlClass: function() {
+        let el = document.getElementsByTagName('html')[0];
+        let values = el.className.split(' ');
+        let valuesJoined = values.join(''); 
+
+        console.log( 'RDM - List of classes on html tag' );
+        if ( valuesJoined ) {
+          console.table( values );
+        } else {
+          console.log( '    No classes found' );
+        }
+      },
+
+      listMetas: function() {
+        let elems = document.getElementsByTagName('meta'); 
+
+        console.log( 'RDM - List of  metas' );
+        if ( elems && elems.length > 0 ) {
+          console.table( 
+            elems, 
+            ["name", "property", "http-equiv", "content", "container" ] 
+          );
+        } else {
+          console.log( '    No meta found' );
+        }
+      },
+      
+      listEditUrl: function() {
+        let el = document.getElementsByTagName('body')[0];
+      
+        // list them
+        for ( cls of el.className.split(' ') ) {
+          // display Wordpress edit url
+          logWPEditLink ( cls, "page-id-" );
+          logWPEditLink ( cls, "postid-" );
+      
+          function logWPEditLink ( classNameString, beginsWithString ) {
+            if ( classNameString.includes( beginsWithString ) ) {
+              showLink( findId ( classNameString, beginsWithString ) );
+            }
+          };
+      
+          function findId ( string, matchString ) {
+            let pos = matchString.length - string.length;
+            return string.slice( pos );
+          };
+          
+          function showLink ( pageId ) {
+            console.log( "RDM - Page edit url: ");
+            console.log( "  " + window.location.origin + "/wp-admin/post.php?post=" + pageId + "&action=edit" );
+          };
+        }
+      },
+
+      list: function() {
+        this.listHtmlClass();
+        this.listBodyClass();
+        this.listMetas();
+        this.listEditUrl();			
+      }
+      
+    };  
+  })();   
+  `;
+  const script_list = `rdm.list()`;
+  const script_listHtmlClass = `rdm.listHtmlClass()`;
+  const script_listBodyClass= `rdm.listBodyClass()`;
+  const script_listMetas= `rdm.listMetas()`;
+  const script_listEditUrl = `rdm.listEditUrl()`;
+
   getCurrentTabUrl( (tab) => {  // this closure is the callback
   
     console.trace('RDM WpInfo ext: trace - within the callback');
@@ -43,11 +135,33 @@ document.addEventListener('DOMContentLoaded', () => {
     console.table( tab );
     console.log( 'url: ' + tab.url );
 
-    chrome.tabs.executeScript({ // this execute some code on tab
-      code: `{ 
-        console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 1');
-      }`
-    });
+    let dropdown = document.getElementById('dropdown');
+    dropdown.addEventListener('change', function() {
+
+      // FIXME: add code to execute when the dropdown changes
+
+/*
+
+${ (this.value).call() }
+  
+Uncaught TypeError: this.value.call is not a function
+at HTMLSelectElement.<anonymous> (popup.js:148)
+
+*/
+
+
+      chrome.tabs.executeScript({ // this execute some code on tab
+        code: `{ 
+          console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 3 - calling an injected function');
+  
+          ${script}
+  
+          rdm.${ this.value }();
+        }`
+      });
+  
+
+    }); // end addEventListener('change')
 
     /* NOTE: The following block of code does not work. It does not have any collection with previous .executeScript calls
     let script = 'var hello = function() { alert("Hello World!!"); } ';
@@ -70,17 +184,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     */
     
-    // The following does work
-    chrome.tabs.executeScript({ // this execute some code on tab
-      code: `{ 
-        console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 3 - calling an injected function');
-
-        var hello = function() { alert("Hello World!!"); }; 
-        hello(); 
-  
-      }`
-    });
-
-
   }); // end callback
 }); // end addEventListener
