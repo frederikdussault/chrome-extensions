@@ -59,16 +59,30 @@ function insertCode(script) {
   // is inserted into the active tab of the current window, which serves as the
   // default.
 
-// FIXME: revise to not execute the script BUT insert it.  ref chrome-dev-tools-skeleton/devtools.js
-// NOTE: also ref https://stackoverflow.com/questions/13166293/about-chrome-tabs-executescript-id-details-callback
-// https://developer.mozilla.org/fr/Add-ons/WebExtensions/API/tabs/executeScript
+  // FIXME: revise to not execute the script BUT insert it.  ref chrome-dev-tools-skeleton/devtools.js
+  // NOTE: also ref https://stackoverflow.com/questions/13166293/about-chrome-tabs-executescript-id-details-callback
+  // https://developer.mozilla.org/fr/Add-ons/WebExtensions/API/tabs/executeScript
+
+
+  let inserter = `
+  let sElement = document.createElement('script');
+  sElement.innerHTML = ${script};
+  document.querySelector('head').appendChild(sElement);
+  `;
+
+  chrome.tabs.executeScript({ // this execute some code
+    code: inserter,
+    runAt: "document_end"
+  });
 
 
   // FIXME: Then later in code execute code like this to call selected actions eg where script="rdm.listHtmlClass();"  
-  chrome.tabs.executeScript({ // this execute some code
-    code: script,
-    runAt: "document_end"
-  });
+  /* 
+    chrome.tabs.executeScript({ // this execute some code
+      code: script,
+      runAt: "document_end"
+    }); 
+  */
 }
 
 // This extension inject a script in the current tab. Script from which we will fetch information from the DOM. 
