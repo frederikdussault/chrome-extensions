@@ -10,15 +10,12 @@
  */
 function getCurrentTabUrl(callback) {
 
-  console.trace('RDM WpInfo ext: trace - getCurrentTabUrl');
-
   let queryInfo = {
     active: true,
     currentWindow: true
   };
 
   chrome.tabs.query(queryInfo, (tabs) => {
-    console.trace('RDM WpInfo ext: trace - chrome.tabs.query');
 
     let tab = tabs[0];
     let url = tab.url;
@@ -34,9 +31,138 @@ function getCurrentTabUrl(callback) {
 // current.
 document.addEventListener('DOMContentLoaded', () => {
 
-  console.trace('RDM WpInfo ext: trace - addEventListener DOMContentLoaded');
+  let data = {
+    'label': 'All the options',
+    'list': {
+      'code': function() {
+        this.listHtmlClass();
+        this.listBodyClass();
+        this.listMetas();
+        this.listEditUrl();			
+      },
+    },
 
-  // Variable definitions
+    'listBodyClass': {
+      'label': 'List classes applied on BODY tag',
+      'code': function() {
+        let el = document.getElementsByTagName('body')[0];
+        let values = el.className.split(' ');
+        let valuesJoined = values.join(''); 
+  
+        console.log( 'RDM - List of classes on body tag' );
+        if ( valuesJoined ) {
+          console.table( values );
+        } else {
+          console.log( '    No classes found' );
+        }
+      },
+    },
+
+    listHtmlClass: {
+      'label': 'List classes applied on HTML tag',
+      'code': function() {
+        let el = document.getElementsByTagName('html')[0];
+        let values = el.className.split(' ');
+        let valuesJoined = values.join(''); 
+  
+        console.log( 'RDM - List of classes on html tag' );
+        if ( valuesJoined ) {
+          console.table( values );
+        } else {
+          console.log( '    No classes found' );
+        }
+      },
+
+    },
+
+    listMetas: {
+      'label': 'List the meta information',
+      'code': function() {
+        let elems = document.getElementsByTagName('meta'); 
+  
+        console.log( 'RDM - List of  metas' );
+        if ( elems && elems.length > 0 ) {
+          console.table( 
+            elems, 
+            ["name", "property", "http-equiv", "content", "container" ] 
+          );
+        } else {
+          console.log( '    No meta found' );
+        }
+      },
+    },
+    
+    listEditUrl: {
+      'label': 'Show Wordpress edit page url',
+      'code': function() {
+        let el = document.getElementsByTagName('body')[0];
+      
+        // list them
+        for ( cls of el.className.split(' ') ) {
+          // display Wordpress edit url
+          logWPEditLink ( cls, "page-id-" );
+          logWPEditLink ( cls, "postid-" );
+      
+          function logWPEditLink ( classNameString, beginsWithString ) {
+            if ( classNameString.includes( beginsWithString ) ) {
+              showLink( findId ( classNameString, beginsWithString ) );
+            }
+          };
+      
+          function findId ( string, matchString ) {
+            let pos = matchString.length - string.length;
+            return string.slice( pos );
+          };
+          
+          function showLink ( pageId ) {
+            console.log( "RDM - Page edit url: ");
+            console.log( "  " + window.location.origin + "/wp-admin/post.php?post=" + pageId + "&action=edit" );
+          };
+        }
+      },
+    }, // end listEditUrl
+    
+
+  };
+  /**
+   * @description build html select field options based on data object
+   * @param {string} elementID
+   * @param {string} value
+   * @param {string} label
+   */
+  function appendToDropdown ( elemID, value, label ) {
+    // FIXME: add code
+
+    // create an option: <option value="${value}">${label}</option>
+    // add option to elemID
+  }
+  
+  /**
+   * @description 
+   * @param {string} name function name
+   * @param {string} code function code
+   * @returns {string} formated code
+   */
+  function formatCode ( name, code ) {
+    /* format a code as
+      `${name}: ${code.toString()}`
+    */
+    // FIXME: to test
+    return `${name}: ${code.toString()}`
+  }
+
+  // FIXME: build data and dropdown - from appendToDropdown & formatCode
+  let scriptString = '';
+  // for {key, value} in data
+    // appendToDropdown ( elemID, key, value.label )
+    // scriptString += formatCode ( key, value.code )
+
+  /* 
+    FIXME: replace the return section with 
+    return {
+      ${scriptString}
+    };
+  */
   const script = 
   `/* RDM Worpress Information object */
 
@@ -130,29 +256,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   getCurrentTabUrl( (tab) => {  // this closure is the callback
   
-    console.trace('RDM WpInfo ext: trace - within the callback');
-    console.log( 'table: ' );
-    console.table( tab );
-    console.log( 'url: ' + tab.url );
-
     let dropdown = document.getElementById('dropdown');
     dropdown.addEventListener('change', function() {
 
-      // FIXME: add code to execute when the dropdown changes
-
-/*
-
-${ (this.value).call() }
-  
-Uncaught TypeError: this.value.call is not a function
-at HTMLSelectElement.<anonymous> (popup.js:148)
-
-*/
-
-
-      chrome.tabs.executeScript({ // this execute some code on tab
+      chrome.tabs.executeScript({ // this execute selected code on tab
         code: `{ 
-          console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 3 - calling an injected function');
+          console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript - calling an injected function');
   
           ${script}
   
