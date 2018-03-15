@@ -125,12 +125,21 @@ document.addEventListener('DOMContentLoaded', () => {
         'label': 'Show Wordpress edit page url',
         'code': function() {
             let el = document.getElementsByTagName('body')[0];
+            let elClasses = el.className.split(' ').filter(item => item !== "");
+            let found = false;
+            let wpClasses = [ "page-id-", "postid-" ];
         
-            // list them
-            for ( let cls of el.className.split(' ') ) {
-            // display Wordpress edit url
-            logWPEditLink ( cls, "page-id-" );
-            logWPEditLink ( cls, "postid-" );      
+            console.log( "RDM - Wordpress edit page url: ");
+            if ( elClasses.length > 0 ) {
+              // list them
+              for ( let cls of elClasses ) {
+                // display Wordpress edit url
+                found += logWPEditLink ( cls, wpClasses );
+              }
+            }
+            
+            if ( !found ) {
+              console.log( '    No Wordpress classes found' );
             }
         },
     }
@@ -148,10 +157,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const script = 
   `/* RDM Worpress Information object */
 
-  function logWPEditLink ( classNameString, beginsWithString ) {
-    if ( classNameString.includes( beginsWithString ) ) {
-      showLink( findId ( classNameString, beginsWithString ) );
+  function logWPEditLink ( classNameString, beginsWithStrings ) {
+    let arrBeginsWith = [];
+    
+    if ( !classNameString || !beginsWithStrings ) return false;
+
+    if ( Array.isArray(beginsWithStrings) ) {
+      arrBeginsWith = beginsWithStrings;
+    } else if ( typeof(beginsWithStrings) === 'string' ) {
+      arrBeginsWith[0] = beginsWithStrings;
+    } else 
+      return false;
+
+    for (const strBegin of arrBeginsWith) {
+      if ( classNameString.includes( strBegin ) ) {
+        let idString = findId ( classNameString, strBegin );
+  
+        console.log( "  " + window.location.origin + "/wp-admin/post.php?post=" + idString + "&action=edit" );
+        return true;
+      }        
     }
+
+    return false;
   }
 
   function findId ( string, matchString ) {
@@ -159,13 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return string.slice( pos );
   }
   
-  function showLink ( pageId ) {
-    console.log( "RDM - Page edit url: ");
-    console.log( "  " + window.location.origin + "/wp-admin/post.php?post=" + pageId + "&action=edit" );
-  }
-
   let rdm = (function() {
-
     let domain = window.location.origin;
 
     return {
@@ -180,8 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       chrome.tabs.executeScript({ // this execute selected code on tab
         code: `{ 
-          console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript - calling an injected function');
-  
           ${script}
   
           rdm.${ this.value }();
@@ -189,28 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   
 
-    }); // end addEventListener('change')
-
-    /* NOTE The following block of code does not work. It does not have any collection with previous .executeScript calls
-    let script = 'var hello = function() { alert("Hello World!!"); } ';
-    chrome.tabs.executeScript({ // this execute some code on tab
-      code: `{ 
-        console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 2'); 
-        let sElement = document.createElement('script');
-        sElement.setAttribute('id', 'WpInfoExt');
-        sElement.innerHTML = '${script}';
-        document.querySelector('head').appendChild(sElement);
-      }`
-    });
-
-    chrome.tabs.executeScript({ // this execute some code on tab
-      code: `{ 
-        console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 3 - calling an injected function'); 
-        window.hello();
-
-      }`
-    });
-    */
-    
+    }); // end addEventListener('change')    
   }); // end callback
 }); // end addEventListener

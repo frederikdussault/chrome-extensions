@@ -1,9 +1,13 @@
 {
   "manifest_version": 2,
-
   "name": "WebProducer information from active tab extension",
-  "description": "This extension allows the user to get information from the current page DOM.",
   "version": "1.0",
+
+  "description": "This extension allows the user to get information from the current page DOM.",
+
+  "icons": {
+    "48": "icon.png"
+  },
 
   "browser_action": {
     "default_title": "WebProducer Information",
