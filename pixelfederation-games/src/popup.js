@@ -101,7 +101,40 @@ document.addEventListener('DOMContentLoaded', () => {
       'label': 'TrainStation',
       'code': function() {
         // trainsStation.js
-        document.querySelector('#fb-root  div').remove();
+        let h = 900; // height
+
+        // page elements to resize: .portal-game-wrap
+        document.querySelector('.portal-game-wrap').style.margin = 0;
+
+        // page elements to hide: #fb-root, #footer
+        let elems = document.querySelectorAll('#fb-root, #footer');
+        if (elems) {
+          for ( let elem of elems ) {
+                elem.style.display = 'none';
+          }
+        }
+
+        // frame elements to hide: #fb-root, .top-news, #header-game, #portal-bar, .bottom-news-wrap, #footer-game
+        // game elements to resize: #game-wrap
+
+
+        let game_frame = document.querySelector('iframe.game-iframe').contentDocument;
+        if (game_frame) {
+          game_frame.body.style.height = (h+10)+'px';
+
+          let game = game_frame.querySelector('#game-wrap');
+          if (game) {
+            game.style.height = h+'px';
+          }
+
+          let frame_sections = game_frame.querySelectorAll('#fb-root, .top-news, #header-game, #portal-bar, .bottom-news-wrap, #footer-game');
+          if (frame_sections) {
+            for ( let elem of frame_sections ) {
+              elem.style.display = 'none';
+            }
+          }
+        }
+
       },
     },
   ]; // end data
@@ -118,24 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const script = 
   `/* Screen Stretcher for Pixel Federation Games extension */
 
-  function logWPEditLink ( classNameString, beginsWithString ) {
-    if ( classNameString.includes( beginsWithString ) ) {
-      showLink( findId ( classNameString, beginsWithString ) );
-    }
-  }
-
-  function findId ( string, matchString ) {
-    let pos = matchString.length - string.length;
-    return string.slice( pos );
-  }
-  
-  function showLink ( pageId ) {
-    console.log( "RDM - Page edit url: ");
-    console.log( "  " + window.location.origin + "/wp-admin/post.php?post=" + pageId + "&action=edit" );
-  }
-
   let rdm = (function() {
-
     let domain = window.location.origin;
 
     return {
@@ -150,10 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       chrome.tabs.executeScript({ // this execute selected code on tab
         code: `{ 
-          console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript - calling an injected function');
-  
-          debugger;
-
           //inject jquery
           if ( typeof(jQuery) !== 'function' ) {
             let elScript = document.createElement('script'); 
@@ -170,27 +182,5 @@ document.addEventListener('DOMContentLoaded', () => {
   
 
     }); // end addEventListener('change')
-
-    /* NOTE The following block of code does not work. It does not have any collection with previous .executeScript calls
-    let script = 'var hello = function() { alert("Hello World!!"); } ';
-    chrome.tabs.executeScript({ // this execute some code on tab
-      code: `{ 
-        console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 2'); 
-        let sElement = document.createElement('script');
-        sElement.setAttribute('id', 'WpInfoExt');
-        sElement.innerHTML = '${script}';
-        document.querySelector('head').appendChild(sElement);
-      }`
-    });
-
-    chrome.tabs.executeScript({ // this execute some code on tab
-      code: `{ 
-        console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript 3 - calling an injected function'); 
-        window.hello();
-
-      }`
-    });
-    */
-    
   }); // end callback
 }); // end addEventListener
