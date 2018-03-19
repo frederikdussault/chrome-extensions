@@ -62,36 +62,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let data = [
     {
-        'name': 'seaport',
-        'label': 'Seaport',
-        'code': function() {
-          // Seaport.js
-          let h = 900; // height
+      'name': 'seaport',
+      'label': 'Seaport',
+      'code': function() {
+        // Seaport.js
+        let h = 900; // height
 
-          $('#rightCol').remove();
-          $('#header, #footer').css('display','none');
+        let rightCol = document.querySelector('#rightCol');
+        if (rightCol) rightCol.remove();
 
-          let $game_iframe = $('iframe.game-iframe').contents()
-          let $game = $game_iframe.find('#Game');
-
-          $game_iframe
-              .css('height',(h+10)+'px')
-              .find('.header,.player_bar, .top_menu, .flash_update, .bottom_links')
-                  .css('display','none');
-      
-          $game
-              .css('height',h+'px')
-              .find('div.player_bar, div.flash_update, div.bottom_links')
-                  .css('display','none');
+        let elems = document.querySelectorAll('#header, #footer');
+        if (elems) {
+          for ( let elem of elems ) {
+                elem.style.display = 'none';
+          }
         }
+
+        let game_frame = document.querySelector('iframe.game-iframe').contentDocument;
+        if (game_frame) {
+          game_frame.body.style.height = (h+10)+'px';
+
+          let game = game_frame.querySelector('#Game');
+          if (game) {
+            game.style.height = h+'px';
+          }
+
+          let frame_sections = game_frame.querySelectorAll('.header, .player_bar, .top_menu, .flash_update, .bottom_links');
+          if (frame_sections) {
+            for ( let elem of frame_sections ) {
+              elem.style.display = 'none';
+            }
+          }
+        }
+      }
     },
     {
-        'name': 'trainstation',
-        'label': 'TrainStation',
-        'code': function() {
-          // trainsStation.js
-            $('#fb-root  div').remove();
-        },
+      'name': 'trainstation',
+      'label': 'TrainStation',
+      'code': function() {
+        // trainsStation.js
+        document.querySelector('#fb-root  div').remove();
+      },
     },
   ]; // end data
   let dropdown = document.getElementById('dropdown');
@@ -148,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let elScript = document.createElement('script'); 
             elScript.type = 'text/javascript';
             elScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js';
-            document.querySelector('head').appendChild(elScript);
+            document.querySelector('body').appendChild(elScript);
           }
         
           ${script}
