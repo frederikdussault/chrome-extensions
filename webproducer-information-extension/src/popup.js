@@ -30,20 +30,120 @@ function getCurrentTabUrl(callback) {
 // The user can select from the dropdown which information he wants for the
 // current.
 document.addEventListener('DOMContentLoaded', () => {
-
-  /**
-   * @description 
-   * @param {string} name function name
-   * @param {string} code function code
-   * @returns {string} formated code
-   */
-  function formatCode ( name, code, sep = ',\n\n' ) {
-    /* format a code as
-      `${name}: ${code.toString()}`
-    */
-    return `${name}: ${code.toString()}${sep}`
-  }
   
+  getCurrentTabUrl( (tab) => {  // this closure is the callback
+  
+    let dropdown = document.getElementById('dropdown');
+    buildDropdown(dropdown);
+    dropdown.addEventListener('change', function() {
+
+      chrome.tabs.executeScript({ // this execute selected code on tab
+        code: `{ 
+          ${buildScript()}
+  
+          rdm.${ this.value }();
+        }`
+      });
+
+    }); // end addEventListener('change')    
+
+  }); // end callback
+}); // end addEventListener
+
+
+/**
+ * @description data used to pop-up drop-down items and associatyed command to execute
+ */
+const data = [
+  {
+      'name': 'list',
+      'label': 'All the options',
+      'code': function() {
+          this.listHtmlClass();
+          this.listBodyClass();
+          this.listMetas();
+          this.listEditUrl();			
+      }
+  },
+  {
+      'name': 'listBodyClass',
+      'label': 'List classes applied on BODY tag',
+      'code': function() {
+          let el = document.getElementsByTagName('body')[0];
+          let values = el.className.split(' ');
+          let valuesJoined = values.join(''); 
+
+          console.log( 'RDM - List of classes on body tag' );
+          if ( valuesJoined ) {
+              console.table( values );
+          } else {
+              console.log( '    No classes found' );
+          }
+      }
+  },
+  {
+      'name': 'listHtmlClass',
+      'label': 'List classes applied on HTML tag',
+      'code': function() {
+          let el = document.getElementsByTagName('html')[0];
+          let values = el.className.split(' ');
+          let valuesJoined = values.join(''); 
+  
+          console.log( 'RDM - List of classes on html tag' );
+          if ( valuesJoined ) {
+          console.table( values );
+          } else {
+          console.log( '    No classes found' );
+          }
+      },
+  },
+  {
+      'name': 'listMetas',
+      'label': 'List the meta information',
+      'code': function() {
+          let elems = document.getElementsByTagName('meta'); 
+  
+          console.log( 'RDM - List of  metas' );
+          if ( elems && elems.length > 0 ) {
+          console.table( 
+              elems, 
+              ["name", "property", "http-equiv", "content", "container" ] 
+          );
+          } else {
+          console.log( '    No meta found' );
+          }
+      },
+  },
+  {
+      'name': 'listEditUrl',
+      'label': 'Show Wordpress edit page url',
+      'code': function() {
+          let el = document.getElementsByTagName('body')[0];
+          let elClasses = el.className.split(' ').filter(item => item !== "");
+          let found = false;
+          let wpClasses = [ "page-id-", "postid-" ];
+      
+          console.log( "RDM - Wordpress edit page url: ");
+          if ( elClasses.length > 0 ) {
+            // list them
+            for ( let cls of elClasses ) {
+              // display Wordpress edit url
+              found += logWPEditLink ( cls, wpClasses );
+            }
+          }
+          
+          if ( !found ) {
+            console.log( '    No Wordpress classes found' );
+          }
+      },
+  }
+]; // end data
+
+/**
+ * @description Build pop-up dropdown
+ */
+function buildDropdown (dropdown) {
+
   /**
    * @description build html select field options based on data object
    * @param {string} elementID
@@ -58,156 +158,75 @@ document.addEventListener('DOMContentLoaded', () => {
         optionEl.innerHTML = label;
     elemID.appendChild(optionEl);
   }
-  
-
-  let data = [
-    {
-        'name': 'list',
-        'label': 'All the options',
-        'code': function() {
-            this.listHtmlClass();
-            this.listBodyClass();
-            this.listMetas();
-            this.listEditUrl();			
-        }
-    },
-    {
-        'name': 'listBodyClass',
-        'label': 'List classes applied on BODY tag',
-        'code': function() {
-            let el = document.getElementsByTagName('body')[0];
-            let values = el.className.split(' ');
-            let valuesJoined = values.join(''); 
-
-            console.log( 'RDM - List of classes on body tag' );
-            if ( valuesJoined ) {
-                console.table( values );
-            } else {
-                console.log( '    No classes found' );
-            }
-        }
-    },
-    {
-        'name': 'listHtmlClass',
-        'label': 'List classes applied on HTML tag',
-        'code': function() {
-            let el = document.getElementsByTagName('html')[0];
-            let values = el.className.split(' ');
-            let valuesJoined = values.join(''); 
     
-            console.log( 'RDM - List of classes on html tag' );
-            if ( valuesJoined ) {
-            console.table( values );
-            } else {
-            console.log( '    No classes found' );
-            }
-        },
-    },
-    {
-        'name': 'listMetas',
-        'label': 'List the meta information',
-        'code': function() {
-            let elems = document.getElementsByTagName('meta'); 
-    
-            console.log( 'RDM - List of  metas' );
-            if ( elems && elems.length > 0 ) {
-            console.table( 
-                elems, 
-                ["name", "property", "http-equiv", "content", "container" ] 
-            );
-            } else {
-            console.log( '    No meta found' );
-            }
-        },
-    },
-    {
-        'name': 'listEditUrl',
-        'label': 'Show Wordpress edit page url',
-        'code': function() {
-            let el = document.getElementsByTagName('body')[0];
-            let elClasses = el.className.split(' ').filter(item => item !== "");
-            let found = false;
-            let wpClasses = [ "page-id-", "postid-" ];
-        
-            console.log( "RDM - Wordpress edit page url: ");
-            if ( elClasses.length > 0 ) {
-              // list them
-              for ( let cls of elClasses ) {
-                // display Wordpress edit url
-                found += logWPEditLink ( cls, wpClasses );
-              }
-            }
-            
-            if ( !found ) {
-              console.log( '    No Wordpress classes found' );
-            }
-        },
-    }
-  ]; // end data
-  let dropdown = document.getElementById('dropdown');
+  data.forEach( ({name, label, code}) => { 
+      appendToDropdown ( dropdown, name, label );
+  });
+} // end buildDropdown
+
+/**
+ * @description Build script to inject
+ * @returns {string} function code to execute
+ */
+function buildScript () {
+
+  /**
+   * @description 
+   * @param {string} name function name
+   * @param {string} code function code
+   * @returns {string} formated code
+   */
+  function formatCode ( name, code, sep = ',\n\n' ) {
+    /* format a code as
+      `${name}: ${code.toString()}`
+    */
+    return `${name}: ${code.toString()}${sep}`
+  }
 
   let scriptString = '';
-  data.forEach( ({name, label, code}) => { 
-    // build dropdown
-    appendToDropdown ( dropdown, name, label );
 
-    // build script
-    scriptString += formatCode ( name, code );
+  // build script
+  data.forEach( ({name, label, code}) => { 
+      scriptString += formatCode ( name, code );
   });
-  const script = 
-  `/* RDM Worpress Information object */
+
+  return `/* RDM Worpress Information object */
 
   function logWPEditLink ( classNameString, beginsWithStrings ) {
-    let arrBeginsWith = [];
-    
-    if ( !classNameString || !beginsWithStrings ) return false;
+      let arrBeginsWith = [];
+      
+      if ( !classNameString || !beginsWithStrings ) return false;
 
-    if ( Array.isArray(beginsWithStrings) ) {
+      if ( Array.isArray(beginsWithStrings) ) {
       arrBeginsWith = beginsWithStrings;
-    } else if ( typeof(beginsWithStrings) === 'string' ) {
+      } else if ( typeof(beginsWithStrings) === 'string' ) {
       arrBeginsWith[0] = beginsWithStrings;
-    } else 
+      } else 
       return false;
 
-    for (const strBegin of arrBeginsWith) {
+      for (const strBegin of arrBeginsWith) {
       if ( classNameString.includes( strBegin ) ) {
-        let idString = findId ( classNameString, strBegin );
-  
-        console.log( "  " + window.location.origin + "/wp-admin/post.php?post=" + idString + "&action=edit" );
-        return true;
-      }        
-    }
+          let idString = findId ( classNameString, strBegin );
 
-    return false;
+          console.log( "  " + window.location.origin + "/wp-admin/post.php?post=" + idString + "&action=edit" );
+          return true;
+      }        
+      }
+
+      return false;
   }
 
   function findId ( string, matchString ) {
-    let pos = matchString.length - string.length;
-    return string.slice( pos );
+      let pos = matchString.length - string.length;
+      return string.slice( pos );
   }
-  
-  let rdm = (function() {
-    let domain = window.location.origin;
 
-    return {
+  let rdm = (function() {
+      let domain = window.location.origin;
+
+      return {
       ${scriptString}
-    }; // end return
+      }; // end return
   })();   
   `;
-
-  getCurrentTabUrl( (tab) => {  // this closure is the callback
-  
-    dropdown.addEventListener('change', function() {
-
-      chrome.tabs.executeScript({ // this execute selected code on tab
-        code: `{ 
-          ${script}
-  
-          rdm.${ this.value }();
-        }`
-      });
-  
-
-    }); // end addEventListener('change')    
-  }); // end callback
-}); // end addEventListener
+} // end buildScript
