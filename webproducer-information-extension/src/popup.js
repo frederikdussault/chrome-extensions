@@ -33,6 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
   
   getCurrentTabUrl( (tab) => {  // this closure is the callback
   
+    // get stored values
+    let prefixClassInput = document.getElementById('wpclass');
+    let wpPrefixClass = chrome.storage.sync.get(['wpPrefixClass'], function(result) {
+        console.log('Value currently is ' + result.wpPrefixClass);
+    });
+    if (wpPrefixClass) 
+        prefixClassInput.value = wpPrefixClass;
+
+    // populate the wpclass input field
+    let wpclass = document.getElementById('wpclass');
+
+    // populate the task dropdown
     let dropdown = document.getElementById('dropdown');
     buildDropdown(dropdown);
     dropdown.addEventListener('change', function() {
@@ -52,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /**
- * @description data used to pop-up drop-down items and associatyed command to execute
+ * @description data used to pop-up drop-down items and associated command to execute
  */
 const data = [
   {
@@ -138,6 +150,29 @@ const data = [
       },
   }
 ]; // end data
+
+/**
+ * Gets the saved wpclass prefix list.
+ *
+ * @param {function(string)} callback called with the saved background color for
+ *     the given url on success, or a falsy value if no color is retrieved.
+ */
+function getSavedWpclass(inputfield, callback) {
+    // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
+    // for chrome.runtime.lastError to ensure correctness even when the API call
+    // fails.
+    chrome.storage.sync.get(['classPrefixes'], (result) => {
+      callback(inputfield, chrome.runtime.lastError ? null : result.classPrefixes);
+    });
+}
+/**
+ * Update wpclass field value.
+ *
+ * @param {string} classList comma separated class prefixes 
+ */
+function initializeWpclassInputField(inputfield, classList) {
+    //FIXME: Add code
+}
 
 /**
  * @description Build pop-up dropdown

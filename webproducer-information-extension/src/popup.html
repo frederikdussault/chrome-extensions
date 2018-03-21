@@ -7,36 +7,7 @@
 <html>
   <head>
     <title>RDM Wordpress Information</title>
-    <style type="text/css">
-      body {
-        margin: 10px;
-        white-space: nowrap;
-      }
-
-      h1 {
-        font-size: 15px;
-      }
-
-      #container {
-        display: flex;
-        flex-direction: column;
-        margin: 5px;
-        width: 290px;
-        align-items: center;
-      }
-
-      #container span, 
-      #container #dropdown {
-        flex: auto;
-      }
-    </style>
-
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-    -->
+    <link rel="stylesheet" href="styles.css">
     <script src="./popup.js"></script>
   </head>
 
@@ -44,10 +15,12 @@
     <h1>RDM Wordpress Information</h1>
     <div id="container">
       <span>What information would you like?</span>
-      <select id="dropdown">
+      <select id="dropdown" title="Action(s) to execute">
         <option selected disabled hidden value=''></option>
         <!-- options added dynamicaly -->
       </select>
+      <label for="wpclass">Wordpress class prefix for post/page edit</label> 
+      <input type="text" name="wpclass" id="wpclass" title="List of comma separated class prefix" placeholder='eg: "page-id-", "postid-"'>
     </div>
   </body>
 </html>
