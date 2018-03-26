@@ -30,20 +30,47 @@ function getCurrentTabUrl(callback) {
 // The user can select from the dropdown which information he wants for the
 // current.
 document.addEventListener('DOMContentLoaded', () => {
-  
+
+  var wpClasses = [];
+
   getCurrentTabUrl( (tab) => {  // this closure is the callback
   
+    /**
+     * @description trim and remove blanks around comma separator
+     * @param {string} toSanitize
+     * @returns {string}
+     * note: trim spaces around commas and remove extra commas
+     */
+    function sanitizeClassList(toSanitize) {
+        return toSanitize
+                .split(',')
+                .reduce( (arr, s) => {
+                    s = s.trim();
+                    if (s) arr.push(s);
+                    return arr;
+                  }, [])
+                .join(',');
+    }
+
     // get stored values
     let prefixClassInput = document.getElementById('wpclass');
-    let wpPrefixClass = chrome.storage.sync.get(['wpPrefixClass'], function(result) {
-        console.log('Value currently is ' + result.wpPrefixClass);
+    chrome.storage.sync.get(['classPrefixes'], function(result) {
+        prefixClassInput.value = result.classPrefixes;
+        console.log('result.classPrefixes ' + result.classPrefixes);
+        console.log('prefixClassInput.value: ' + prefixClassInput.value);
     });
-    if (wpPrefixClass) 
-        prefixClassInput.value = wpPrefixClass;
+    prefixClassInput.addEventListener('change', function() {
+        //sanitize
+        prefixClassInput.value = sanitizeClassList(prefixClassInput.value);
+        console.log('prefixClassInput.value: ' + prefixClassInput.value);
 
-    // populate the wpclass input field
-    let wpclass = document.getElementById('wpclass');
+        wpClasses = (prefixClassInput.value).split(',');
+        console.log('wpClasses ' + wpClasses);
 
+        debugger;
+        dropdown.dispatchEvent(new Event('change', { 'bubbles': true }));
+    }); // end prefixClassInput addEventListener('change')
+    
     // populate the task dropdown
     let dropdown = document.getElementById('dropdown');
     buildDropdown(dropdown);
@@ -51,16 +78,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       chrome.tabs.executeScript({ // this execute selected code on tab
         code: `{ 
-          ${buildScript()}
-  
-          rdm.${ this.value }();
+            debugger;
+            console.log('wpClasses ' + wpClasses);
+              
+            ${buildScript(wpClasses)}
+
+            rdm.${ this.value }();
         }`
       });
 
-    }); // end addEventListener('change')    
+    }); // end dropdown addEventListener('change')
 
   }); // end callback
-}); // end addEventListener
+}); // end document addEventListener DOMContentLoaded
 
 
 /**
@@ -133,7 +163,7 @@ const data = [
           let el = document.getElementsByTagName('body')[0];
           let elClasses = el.className.split(' ').filter(item => item !== "");
           let found = false;
-          let wpClasses = [ "page-id-", "postid-" ];
+          // let wpClasses = [ "page-id-", "postid-" ]; // Passed in buildScript()
       
           console.log( "RDM - Wordpress edit page url: ");
           if ( elClasses.length > 0 ) {
@@ -150,29 +180,6 @@ const data = [
       },
   }
 ]; // end data
-
-/**
- * Gets the saved wpclass prefix list.
- *
- * @param {function(string)} callback called with the saved background color for
- *     the given url on success, or a falsy value if no color is retrieved.
- */
-function getSavedWpclass(inputfield, callback) {
-    // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
-    // for chrome.runtime.lastError to ensure correctness even when the API call
-    // fails.
-    chrome.storage.sync.get(['classPrefixes'], (result) => {
-      callback(inputfield, chrome.runtime.lastError ? null : result.classPrefixes);
-    });
-}
-/**
- * Update wpclass field value.
- *
- * @param {string} classList comma separated class prefixes 
- */
-function initializeWpclassInputField(inputfield, classList) {
-    //FIXME: Add code
-}
 
 /**
  * @description Build pop-up dropdown
@@ -203,7 +210,7 @@ function buildDropdown (dropdown) {
  * @description Build script to inject
  * @returns {string} function code to execute
  */
-function buildScript () {
+function buildScript (wpClasses) {
 
   /**
    * @description 
@@ -217,6 +224,10 @@ function buildScript () {
     */
     return `${name}: ${code.toString()}${sep}`
   }
+
+
+  debugger;
+  console.log('wpClasses ' + wpClasses);
 
   let scriptString = '';
 
@@ -257,11 +268,15 @@ function buildScript () {
   }
 
   let rdm = (function() {
-      let domain = window.location.origin;
+    debugger;
+    console.log('wpClasses ' + wpClasses);
+    
+    let domain = window.location.origin;
+    let wpClasses = ${wpClasses};
 
-      return {
-      ${scriptString}
-      }; // end return
+    return {
+    ${scriptString}
+    }; // end return
   })();   
   `;
 } // end buildScript

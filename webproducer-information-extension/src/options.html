@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<!--
+//
+// This file is part of WebProducer information from active tab extension
+//
+// Written by Frederik Dussault (frederik.dussault @ rci.rogers.com)
+//
+-->
 <html>
 <head>
   <title>Extension Options Page</title>
@@ -6,12 +13,31 @@
 </head>
 <body class="options">
 
-<div id="container">
-  <label for="classPrefixes">Default class prefix for Wordpress post/page edit</label> 
-  <input type="text" name="classPrefixes" id="classPrefixes" title="List of comma separated class prefix" placeholder='eg: "page-id-", "postid-"'>
+<div class="panel heading">
+  <img src="icon.png" width="48" height="48" alt="">
+  <h1>WebProducer Information Options</h1>
+</div>
+<div class="panel options-panel">
+  <table>
+    <tr>
+      <th>Wordpress</th>
+      <td>
+          <label for="classPrefixes">Default class prefix for Wordpress post/page edit</label><br/>
+          <textarea type="text" name="classPrefixes" id="classPrefixes" title="List of comma separated class prefix" placeholder='eg: "page-id-", "postid-"'></textarea>
+      </td>
+    </tr>
+    <tr>
+      <th></th>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="2">  
+        <div id="status"></div>
+        <button id="save-button">Save</button>
+      </td>
+    </tr>
 
-  <div id="status"></div>
-  <button id="save">Save</button>
+  </table>
 </div>
 
 <script src="options.js"></script>
