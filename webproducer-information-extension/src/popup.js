@@ -32,20 +32,18 @@ function getCurrentTabUrl(callback) {
 document.addEventListener('DOMContentLoaded', () => {
 
   /**
-   * @description 
+   * @description format a code as js litteral notation: `${name}: ${code.toString()}`
    * @param {string} name function name
    * @param {string} code function code
    * @returns {string} formated code
    */
   function formatCode ( name, code, sep = ',\n\n' ) {
-    /* format a code as
-      `${name}: ${code.toString()}`
-    */
     return `${name}: ${code.toString()}${sep}`
   }
   
+  
   /**
-   * @description build html select field options based on data object
+   * @description build html select field options based on tasks object
    * @param {string} elementID
    * @param {string} value
    * @param {string} label
@@ -60,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
 
-  let data = [
+  let tasks = [
     {
         'name': 'list',
         'label': 'All the options',
@@ -134,17 +132,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
     }
-  ]; // end data
+  ]; // end tasks
+
   let dropdown = document.getElementById('dropdown');
+  tasks.forEach( ({name, label, code}) => { 
+    appendToDropdown ( dropdown, name, label );
+  });
 
   let scriptString = '';
-  data.forEach( ({name, label, code}) => { 
-    // build dropdown
-    appendToDropdown ( dropdown, name, label );
-
-    // build script
+  tasks.forEach( ({name, label, code}) => { 
     scriptString += formatCode ( name, code );
   });
+
   const script = 
   `/* RDM Worpress Information object */
 
@@ -179,9 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dropdown.addEventListener('change', function() {
 
       chrome.tabs.executeScript({ // this execute selected code on tab
-        code: `{ 
-          console.trace('RDM WpInfo ext: trace - chrome.tabs.executeScript - calling an injected function');
-  
+        code: `{  
           ${script}
   
           rdm.${ this.value }();
