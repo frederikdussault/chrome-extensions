@@ -1,0 +1,56 @@
+html, body { height: 100%; }
+
+body {
+    font-family: arial, helvetica, sans-serif; 
+    font-size: 14px; 
+    margin: 25px; 
+}
+
+h1 { 
+    font-size: 22px; 
+    margin: 10px 0 10px 52px; 
+}
+.panel {
+    background: #fff;
+    padding: 20px;
+    color: #333;
+    width: 640px;
+    margin: 10px auto;
+ }
+
+ .panel.heading {
+    padding: 14px 20px;
+}
+
+.panel.heading img { 
+    float: left; 
+    margin-left: -5px; }
+
+.options-panel { 
+    border: 1px solid #ddd;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    line-height: 2em;
+}
+.options-panel th,
+.options-panel td { vertical-align: top; white-space: nowrap; }
+.options-panel th { text-align: right; width: 1%; padding: 8px 15px 10px 10px; }
+.options-panel td { width: 99%; padding: 10px; }
+.options-panel label.indent { margin-left: 24px; }
+.options-panel input,
+.options-panel textarea,
+#classPrefixes
+{ 
+    padding: 5px; 
+    width: 29rem;
+    max-width: 90%;
+}
+.options-panel .disabled { color: #999; }
+
+#footer { margin: 10px 15px; }
+#save-button { padding: 5px 10px; font-weight: bold; }
+#status { margin-left: 5px; color: #02893D; font-weight: bold; }
+
+#about-panel { line-height: 1.5em;}
+#about-panel h2 { font-size: 15px; padding:0; margin:0; margin: 18px 0 3px 0; }
+#about-panel h2.first { margin-top: 0; }

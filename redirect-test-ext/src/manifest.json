@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+
+  "name": "WebProducer Redirection Test Tool",
+  "description": "This extension allows the Webproducer to test a series of URLs based on current site's applied redirects.",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_title": "Redirect test tool",
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab"
+  ]
+}

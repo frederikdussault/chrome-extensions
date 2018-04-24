@@ -1,0 +1,27 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>RDM Wordpress Information</title>
+    <link rel="stylesheet" type="text/css" href="popup.css">
+  </head>
+
+  <body class="cat-01">
+    <h1>RDM Wordpress Information</h1>
+    <div id="container">
+      <label for="dropdown">What information would you like?</label>
+      <select id="dropdown" name="dropdown" title="Action(s) to execute">
+        <option selected disabled hidden value=''></option>
+        <!-- options added dynamicaly -->
+      </select>
+      <label for="wpclass">Wordpress class prefix for post/page edit</label> 
+      <textarea type="text" name="wpclass" id="wpclass" title="List of comma separated class prefix" placeholder='eg: "page-id-", "postid-"'></textarea>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

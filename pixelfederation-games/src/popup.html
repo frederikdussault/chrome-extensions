@@ -1,0 +1,53 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>Screen Stretcher for Pixel Federation Games</title>
+    <style type="text/css">
+      body {
+        margin: 10px;
+        white-space: nowrap;
+      }
+
+      h1 {
+        font-size: 15px;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: column;
+        margin: 5px;
+        width: 290px;
+        align-items: center;
+      }
+
+      #container span, 
+      #container #dropdown {
+        flex: auto;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
+    <script src="popup.js"></script>
+  </head>
+
+  <body>
+    <h1>Screen Stretcher for Pixel Federation Games</h1>
+    <div id="container">
+      <span>What game do you play?</span>
+      <select id="dropdown">
+        <option selected disabled hidden value=''></option>
+        <!-- options added dynamicaly -->
+      </select>
+    </div>
+  </body>
+</html>
