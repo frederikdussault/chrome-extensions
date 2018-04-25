@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     elemID.appendChild(optionEl);
   }
 
+
   /* ------------------------ */
   const data = JSON.stringify(redirectList);
 
@@ -143,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             promises.push(
                 // return a promise
         
-                fetch(domain + element.reqUrl)
+                fetch(element.reqUrl)
                     .then((response) => {
                         let resUrl = (new URL(response.url)).pathname;
         
@@ -169,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         Promise.all(promises).then(() => {
           redirectList.sort(compareStatusThenRequested);
-          console.table(redirectList, ['assert','reqUrl','expUrl','expStatus','resUrl','resStatus','reqNotes'])
+          console.table(redirectList, ['assert','reqUrl','expUrl','expStatus','resUrl','resStatus','reqNotes']);
         });
       }
     },
