@@ -26,8 +26,19 @@
       }
 
       #container span, 
-      #container #dropdown {
+      #container #dropdown,
+      #container #testselector {
         flex: auto;
+      }
+
+      #container #testselector {
+        width: 230px;
+      }
+
+      #container #testselector div {
+        align-content: normal;
+        flex-wrap: wrap;
+        justify-content: start;
       }
     </style>
 
@@ -37,7 +48,7 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
-    <script src="test-series.js"></script>
+    <script src="tasks/test-series.js"></script>
     <script src="popup.js"></script>
   </head>
 
@@ -46,9 +57,15 @@
     <div id="container">
       <span>What information would you like?</span>
       <select id="dropdown">
-        <option selected disabled value=''>Choose a task</option>
+        <option selected disabled value=''>Select a task</option>
         <!-- options added dynamicaly -->
       </select>
+      <div>
+        <h3>Select a redirection test</h3>
+        <div id="testselector">
+          <!-- radio buttons added dynamicaly -->
+        </div>
+      </div>
     </div>
   </body>
 </html>
