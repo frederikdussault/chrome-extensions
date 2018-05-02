@@ -1,5 +1,3 @@
-/* global testblocks:false */
-
 /* https://www.texture.ca/wp-admin/tools.php?page=redirection.php */
 
 /**
