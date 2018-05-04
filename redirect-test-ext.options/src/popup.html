@@ -20,6 +20,7 @@
     button {
       padding: 5px 20px; outline: none; 
     }
+    .error { color: red; }
   </style>
 </head>
 <body>
@@ -33,7 +34,14 @@
       <div id="status"></div>
       <button id="validate">Validate the rules</button>
       <button id="save">Save</button>    
-  </div>
+
+      <div id="test">
+        <button id="getdata">Get data</button>
+        <button id="clearStore">Clear all the store</button>
+        <button id="clearTab">Clear stored information for this tab</button>
+      </div>
+
+    </div>
 </body>
 <script src="popup.js"></script>
 </html>
