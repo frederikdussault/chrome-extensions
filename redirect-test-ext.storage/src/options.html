@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <head><title>RDM Redirection Test Tool Options</title></head>
+  <style>
+    body { min-width: 860px;}
+    /* parent container is a flex box */
+    #container {
+      width: 840px;
+      padding: 0 14px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    #testrules,
+    #status,
+    button {
+      margin: 10px; 
+    }
+    #testrules { width: auto; }
+    button {
+      padding: 5px 20px; outline: none; 
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+      <h1>RDM Redirection Test Tool - Options</h1>
+      <label for="testrules" class='row'>Test Rules:</label>
+      <textarea name="testrules" id="testrules" cols="100" rows="10"></textarea>
+    
+      <div id="status"></div>
+      <button id="validate">Validate the rules</button>
+      <button id="save">Save</button>    
+  </div>
+</body>
+<script src="options.js"></script>
+</html>
