@@ -8,7 +8,7 @@
  */
 function getCurrentTabUrl(callback) {
 
-  debugger;
+  //debugger;
 
   let queryInfo = {
     active: true,
@@ -17,7 +17,7 @@ function getCurrentTabUrl(callback) {
 
   chrome.tabs.query(queryInfo, (tabs) => {
 
-    debugger;
+    //debugger;
 
     let tab = tabs[0];
     // let url = tab.url; 
@@ -38,7 +38,7 @@ function getCurrentTabUrl(callback) {
 // current.
 document.addEventListener('DOMContentLoaded', () => {
 
-  //debugger;
+  ////debugger;
 
   /* Popup action functions */
 
@@ -164,17 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log( "pre storage set - storedData: " );
       console.log( storedData );
 
-      //FIXME: extensions::schemaUtils:115 Uncaught Error: Invocation of form set(string, function) doesn't match definition set(object items, optional function callback)
-      //let jsonToStore = `{ "${url}": ${JSON.stringify(storedData)} }`;
-      //console.log( "pre storage set - jsonToStore: " );
-      //console.log( jsonToStore );
-      
-
       var items = {}; // need an object container
       items[url] = storedData;
     
       chrome.storage.sync.set(items, function() {
-          debugger;
+          ////debugger;
 
           console.log( "Post storage set - url: " );
           console.log( url );
@@ -201,14 +195,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // stored in chrome.storage.
     function getStoredItems(url) {
 
-      debugger;
+      //debugger;
       console.trace( "in getStoredItems method" );
 
       console.log( "pre storage get - storedData: " );
       console.log( storedData );
 
       chrome.storage.sync.get([url], function(items) {
-        debugger;
+        //debugger;
 
         const storedDataDefault = { 'testRules': '' };
 
