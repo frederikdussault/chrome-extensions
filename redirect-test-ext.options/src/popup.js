@@ -20,7 +20,8 @@ function getCurrentTabUrl(callback) {
     debugger;
 
     let tab = tabs[0];
-    let url = tab.url;
+    // let url = tab.url; 
+    let url = new URL(tab.url).origin; //RETURN THE DOMAIN ONLY
 
     console.assert(typeof url == 'string', 'tab.url should be a string');
 
@@ -37,108 +38,149 @@ function getCurrentTabUrl(callback) {
 // current.
 document.addEventListener('DOMContentLoaded', () => {
 
-  debugger;
+  //debugger;
+
+  /* Popup action functions */
+
+  const nTestrules      = document.getElementById('testrules'),
+        nUrlinput       = document.getElementById('urlinput'),
+        nStatustext     = document.getElementById('status'),
+        nValidatebtn    = document.getElementById('validate'),
+        nSavebtn        = document.getElementById('save'),
+        nGetdatabtn     = document.getElementById('getdata'),
+        nClearStorebtn  = document.getElementById('clearStore'),
+        nClearTabbtn    = document.getElementById('clearTab');
+
+  let tabURL = "";
+
+  nValidatebtn.addEventListener( 'click', () => validate_rules() );
+
+  // Validates test rules - must be well formated json
+  function validate_rules() {
+
+    //debugger;
+    console.log( "in validate_rules method" );
+    message( "Validating ...  // Code to be added" );
+
+    let valid = JSON.isValid( nTestrules.value );
+
+    if (!valid) { message( "Your rule definitions is not a valid JSON object", {class:"error", delay: 2000} ) }
+    else {
+      message("Good job, your rules are valid JSON!");
+    };
+
+    return valid;
+  }
+
+  function getUIData() {
+    return { 'testRules': nTestrules.value };
+  }
+
+  function updateUI(data, url) {
+    console.log( "updateUI - data: " );
+    console.log( data );
+
+    nUrlinput.value = url;
+
+    nTestrules.value = data.testRules;
+  }
+
+  function message(text, opts) {
+    const defaultOpts = {
+      class: 'msg',
+      delay: 1000
+    };
+
+    opts = {...defaultOpts, ...opts};
+
+    console.log(text);
+    setTimeout(function() {
+      nStatustext.textContent = text;
+      nStatustext.className = opts.class;
+    }, opts.delay);  
+  }
+
+  JSON.isValid = (jsonObj) => {
+      debugger;
+      try {
+          JSON.parse( jsonObj );
+          
+          console.log( "jsonObj parsed correctly" );
+          return true;
+      } catch (error) {
+          console.log( "jsonObj not parsed correctly - not a valid JSON format" );
+          return false;
+      }
+  }
+  
+  JSON.isValidStringified = (jsonObj) => {
+      try {
+          let stringified = JSON.stringify( jsonObj );
+  
+          JSON.parse( stringified );
+          
+          console.log( "stringified parsed correctly" );
+          return true;
+      } catch (error) {
+          console.log( "stringified not parsed correctly - not a valid JSON format" );
+  
+          console.log("Sorry, can't process")
+          return false;
+      }
+  }
+  
+
+
+  /* Tab action functions */
 
   getCurrentTabUrl( (tab, url) => {  // this closure is the callback
 
     debugger;
     console.log('tab: '); console.log(tab);
 
-    const nTestrules   = document.getElementById('testrules'),
-          nUrlinput    = document.getElementById('urlinput'),
-          nStatustext  = document.getElementById('status'),
-          nValidatebtn = document.getElementById('validate'),
-          nSavebtn     = document.getElementById('save');
-
-          nGetdatabtn = document.getElementById('getdata');
-          nClearStorebtn = document.getElementById('clearStore');
-          nClearTabbtn = document.getElementById('clearTab');
-    
-    const storedDataDefault = {
-      testRules: ''
-    };
     let storedData = {};
+    tabURL = url;
 
-    getStoredItems(url);
+    getStoredItems(tabURL);
 
-    nValidatebtn.addEventListener('click', () => validate_rules() );
-    nSavebtn.addEventListener(    'click', () => storeData(url) );
-    
-    nGetdatabtn.addEventListener(   'click', () => getStoredItems(url) );
-    nClearStorebtn.addEventListener('click', () => clearAllStore() );
-    nClearTabbtn.addEventListener(  'click', () => clearURLStore(url) );
+    nSavebtn.addEventListener    ( 'click', () => storeData(tabURL) );
+    nGetdatabtn.addEventListener   ( 'click', () => getStoredItems(tabURL) );
+    nClearStorebtn.addEventListener( 'click', () => clearAllStore() );
+    nClearTabbtn.addEventListener  ( 'click', () => clearURLStore(tabURL) );
 
     /* Methods */
-
-    function updateUI(data) {
-      console.log( "updateUI - data: " );
-      console.log( data );
-
-      nUrlinput.value = url;
-
-      nTestrules.value = data.testRules;
-    }
-
-    function message(text, opts) {
-      const defaultOpts = {
-        class: 'msg',
-        delay: 2000
-      };
-
-      opts = {...defaultOpts, ...opts};
-
-      setTimeout(function() {
-        nStatustext.textContent = text;
-        nStatustext.className = opts.class;
-      }, opts.delay);  
-    }
-
-    // Validates test rules - must be well formated json
-    function validate_rules() {
-
-      debugger;
-      console.log( "in validate_rules method" );
-
-      let valid = false;
-      let rules = nTestrules.value;
-
-      let text = 'Validating ...  // Code to be added';
-
-      console.log( "Message: " + text );
-      message( text );
-
-      //TODO: validate JSON
-
-      return valid;
-    }
 
     // Saves options to chrome.storage
     function storeData(url) {
       
       debugger;
 
+      // get data from form
+      storedData = getUIData();
+
+      // save data
+
       console.log( "in storeData method" );
       console.log( "pre storage set - storedData: " );
       console.log( storedData );
 
-      storedData[url].testRules = nTestrules.value;
-      console.log( "pre storage set - storedData[url].testRules: " );
-      console.log( storedData[url].testRules );
+      //FIXME: extensions::schemaUtils:115 Uncaught Error: Invocation of form set(string, function) doesn't match definition set(object items, optional function callback)
+      //let jsonToStore = `{ "${url}": ${JSON.stringify(storedData)} }`;
+      //console.log( "pre storage set - jsonToStore: " );
+      //console.log( jsonToStore );
+      
 
-      let  jsonData = JSON.stringify(storedData);
-      console.log( "pre storage set - jsonData: " );
-      console.log( jsonData );
-
-      //FIXME: Uncaught Error: Invocation of form set(string, function) doesn't match definition set(object items, optional function callback)
-      /// format should be URL_string: data_object
-
-      chrome.storage.sync.set(storedData, function() {
+      var items = {}; // need an object container
+      items[url] = storedData;
+    
+      chrome.storage.sync.set(items, function() {
           debugger;
 
-          console.log( "Post storage set - storedData: " );
-          console.log( storedData );
+          console.log( "Post storage set - url: " );
+          console.log( url );
     
-          console.log( storedData[url] );
+          console.log( "Post storage set - jsonToStore: " );
+          console.log( jsonToStore );
 
           let opt = {}, 
               text = '';
@@ -151,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
             text = 'Data saved.';
           }
 
-          console.log( "Message: " + text );
           message(text, opt);
         });
     }
@@ -166,34 +207,39 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log( "pre storage get - storedData: " );
       console.log( storedData );
 
-      chrome.storage.sync.get(url, function(items) {
+      chrome.storage.sync.get([url], function(items) {
         debugger;
 
+        const storedDataDefault = { 'testRules': '' };
 
-          /*
-          Small issue with save item:
-          Should not have created "https://www.texture.ca/wp-admin/tools.php?page=redirection.php":"asdf"
-
-          https://www.texture.ca/wp-admin/tools.php?page=redirection.php :
-            "{"testRules":"asdf","https://www.texture.ca/wp-admin/tools.php?page=redirection.php":"asdf"}"
-          */
-
+        if ( chrome.runtime.lastError || !items  ) {
+          // errored out
+          // nothing saved yet - undefined
+          items = {};
+        } 
         
-        let reply = (chrome.runtime.lastError ? {} : items);
-        console.log( "post storage get - reply: " );
-        console.log( reply );
+        let storedData = {};
+        if ( items[url] ) {
+          // retrieve the stored data
+          storedData = items[url];
+        } else {
+          // save empty values - {}
+          storedData = storedDataDefault;
+        }
 
-        console.log( "post storage get - storedDataDefault: " );
-        console.log( storedDataDefault );
+        console.log( "post storage get - url: " );
+        console.log( url );
 
-        storedData[url] = { ...storedDataDefault, ...reply } ;
+        console.log( "post storage get - items: " );
+        console.log( items );
+
+        console.log( "post storage get - items[url]: " );
+        console.log( items[url] );
+
         console.log( "post storage get - storedData: " );
         console.log( storedData );
 
-        console.log( "post storage get - storedData[url]: " );
-        console.log( storedData[url] );
-
-        updateUI( storedData[url] );
+        updateUI( storedData, url );
 
         let opt = {}, 
             text = ''
@@ -206,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
           text = 'Data loaded.';
         }
 
-        console.log( "Message: " + text );
         message(text, opt);
       });
     }
