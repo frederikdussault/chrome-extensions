@@ -40,7 +40,11 @@ module.exports = function (grunt) {
             options: {
                 sourceMap: true
             },
-            files: { 'src/ui.css': 'src/ui.scss' }  // does not find that
+            dist: {
+                files: {
+                    'src/ui.css': 'src/ui.scss'
+                }
+            }            
         },
         watch: {
             scripts: {

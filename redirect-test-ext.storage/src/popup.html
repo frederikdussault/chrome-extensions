@@ -3,63 +3,10 @@
 <head>
   <head><title>RDM Redirection Test Tool</title></head>
   <style>
-    body { 
-      min-width: 860px;
-      font-family: sans-serif;
-    }
-
-    h2 { margin-top: 20px;}
-    /* parent container is a flex box */
-    #container {
-      width: 840px;
-      padding: 0 14px;
-    }
-    #container, .flex {
-      display: flex; flex-direction: column; justify-content: center;
-    }
-
-    #testrules,
-    #urlinput,
-    #status,
-    button,
-    #TableOfRules
-    {
-      margin: 10px; 
-    }
-    #testrules { width: auto; }
-    button {
-      padding: 5px 20px; outline: none; 
-    }
-    .error { color: red; }
-
-    #Rules { margin-top: 20px; }
-
-    #TableOfRules { border-collapse: collapse; }
-    #TableOfRules thead td, #TableOfRules tfoot td {
-      background-color: cornflowerblue;
-      margin: 0;    
-      border: 1px solid rgb(0, 20, 58);
-      color: aliceblue;
-    }
-    #TableOfRules td { padding: 5px 10px; vertical-align: top; }
-
-    .key { width: 30%; }
-    .value { width: 70%; }
-    .storedData { font-family: monospace; }
-    .storedData .value { 
-      display: block;
-      unicode-bidi: embed;
-      font-family: monospace;
-      white-space: pre;
-    }
-
-    .dev * {
-      font-size: 10px;
-      font-family: monospace;
-    }
   </style>
+  <link rel="stylesheet" href="ui.css">
 </head>
-<body>
+<body class="popup">
   <div id="container">
     <h1>RDM Redirection Test Tool - popup</h1>
 
@@ -93,8 +40,8 @@
       <table id="TableOfRules">
         <thead>
           <tr>
-            <td class="domain">domain</td>
-            <td class="rules">rules</td>
+            <td class="key">domain</td>
+            <td class="value">rules</td>
           </tr>
         </thead>
         <tbody id="TableOfRulesBody">

@@ -1,0 +1,86 @@
+$basefontsize: 18px;
+
+body.popup {
+  min-width: 860px;
+  font-family: sans-serif;
+
+  // parent container is a flex box
+  #container {
+    width: 840px;
+    padding: 0 14px;
+
+    &, .flex {
+      display: flex; flex-direction: column; justify-content: center;
+    }
+  }
+
+  #testrules,
+  #urlinput,
+  #status,
+  button,
+  #TableOfRules
+  {
+    margin: 10px; 
+  }
+
+  #testrules { width: auto; }
+
+  button {
+    padding: 5px 20px; outline: none;   
+  }
+
+  .error { color: red; }
+
+  #TableOfRules {
+    border-collapse: collapse; 
+
+    thead td, tfoot td {
+      background-color: cornflowerblue;
+      color: aliceblue;
+    }
+    td { 
+      margin: 0;    
+      padding: 5px 10px; 
+      vertical-align: top;
+      border: 1px solid rgb(0, 20, 58);
+    }
+  
+    td.key { width: 30%; }
+    td.value { width: 70%; }
+
+    .storedData { 
+      font-family: monospace; 
+    
+      td.value { 
+        unicode-bidi: embed;
+        font-family: monospace;
+        white-space: pre;
+      }
+    }
+    
+  }
+
+  .dev {
+
+    * {
+      font-size: 10px;
+      font-family: monospace;  
+    }
+  
+    button {
+      padding: 3px 5px; 
+    }
+  }
+  
+}
+
+h2 { margin-top: 20px;}
+
+
+#datagrid {
+    border: 1px solid gray;
+}
+
+#datagrid thead, #datagrid tr th, #datagrid th  {
+    color: firebrick;
+}

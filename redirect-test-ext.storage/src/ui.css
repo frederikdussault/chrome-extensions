@@ -1,16 +1,59 @@
-/* 
-$basefontsize : 18px;
-*/
+body.popup {
+  min-width: 860px;
+  font-family: sans-serif; }
+  body.popup #container {
+    width: 840px;
+    padding: 0 14px; }
+    body.popup #container, body.popup #container .flex {
+      display: flex;
+      flex-direction: column;
+      justify-content: center; }
+  body.popup #testrules,
+  body.popup #urlinput,
+  body.popup #status,
+  body.popup button,
+  body.popup #TableOfRules {
+    margin: 10px; }
+  body.popup #testrules {
+    width: auto; }
+  body.popup button {
+    padding: 5px 20px;
+    outline: none; }
+  body.popup .error {
+    color: red; }
+  body.popup #TableOfRules {
+    border-collapse: collapse; }
+    body.popup #TableOfRules thead td, body.popup #TableOfRules tfoot td {
+      background-color: cornflowerblue;
+      color: aliceblue; }
+    body.popup #TableOfRules td {
+      margin: 0;
+      padding: 5px 10px;
+      vertical-align: top;
+      border: 1px solid #00143a; }
+    body.popup #TableOfRules td.key {
+      width: 30%; }
+    body.popup #TableOfRules td.value {
+      width: 70%; }
+    body.popup #TableOfRules .storedData {
+      font-family: monospace; }
+      body.popup #TableOfRules .storedData td.value {
+        unicode-bidi: embed;
+        font-family: monospace;
+        white-space: pre; }
+  body.popup .dev * {
+    font-size: 10px;
+    font-family: monospace; }
+  body.popup .dev button {
+    padding: 3px 5px; }
 
-body { 
-    font-size: 18px;
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif 
-}
+h2 {
+  margin-top: 20px; }
 
 #datagrid {
-    border: 1px solid gray;
-}
+  border: 1px solid gray; }
 
-#datagrid thead, #datagrid tr th, #datagrid th  {
-    color: firebrick;
-}
+#datagrid thead, #datagrid tr th, #datagrid th {
+  color: firebrick; }
+
+/*# sourceMappingURL=ui.css.map */
