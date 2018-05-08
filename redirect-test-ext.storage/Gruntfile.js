@@ -14,24 +14,18 @@ module.exports = function (grunt) {
               tolerance: 1000
             }
         },
-        jshint: {
-            files: [
+        eslint: {
+            options: {
+                configFile: '.eslintrc.json',
+                format: 'html',
+                outputFile: '',
+                fix: true
+            },
+            target: [
                 'package.json',
                 'Gruntfile.js',
                 'src/*.js*',
             ],
-            options: {
-                // options here to override JSHint defaults
-                globals: {
-                    console: true,
-                    document: true,
-                    latedef: true,
-                    curly:true,
-                    nonbsp: true,
-                    nonew: true,
-                },
-                esversion: 6
-            }
         },
         concat: {
             options: {
@@ -50,8 +44,9 @@ module.exports = function (grunt) {
         },
         watch: {
             scripts: {
-                files: ['<%= jshint.files %>'], 
-                tasks: ['newer:jshint', 'concat']            },
+                files: ['<%= eslint.target %>'], 
+                tasks: ['newer:eslint', 'concat']
+            },
             styles: {
                 files: ['src/*.scss'],
                 tasks: ['sass']
@@ -59,13 +54,11 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-eslint');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-newer');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('build',      [
-        'newer:jshint', 'concat', 'sass'
-    ]);
-    grunt.registerTask('default',     ['build', 'watch']);    
+    grunt.registerTask('build',   ['newer:eslint', 'concat', 'sass']);
+    grunt.registerTask('default', ['build', 'watch']);    
 };

@@ -3,17 +3,27 @@
 <head>
   <head><title>RDM Redirection Test Tool</title></head>
   <style>
-    body { min-width: 860px;}
+    body { 
+      min-width: 860px;
+      font-family: sans-serif;
+    }
+
+    h2 { margin-top: 20px;}
     /* parent container is a flex box */
     #container {
       width: 840px;
       padding: 0 14px;
+    }
+    #container, .flex {
       display: flex; flex-direction: column; justify-content: center;
     }
+
     #testrules,
     #urlinput,
     #status,
-    button {
+    button,
+    #TableOfRules
+    {
       margin: 10px; 
     }
     #testrules { width: auto; }
@@ -21,27 +31,96 @@
       padding: 5px 20px; outline: none; 
     }
     .error { color: red; }
+
+    #Rules { margin-top: 20px; }
+
+    #TableOfRules { border-collapse: collapse; }
+    #TableOfRules thead td, #TableOfRules tfoot td {
+      background-color: cornflowerblue;
+      margin: 0;    
+      border: 1px solid rgb(0, 20, 58);
+      color: aliceblue;
+    }
+    #TableOfRules td { padding: 5px 10px; vertical-align: top; }
+
+    .key { width: 30%; }
+    .value { width: 70%; }
+    .storedData { font-family: monospace; }
+    .storedData .value { 
+      display: block;
+      unicode-bidi: embed;
+      font-family: monospace;
+      white-space: pre;
+    }
+
+    .dev * {
+      font-size: 10px;
+      font-family: monospace;
+    }
   </style>
 </head>
 <body>
   <div id="container">
-      <h1>RDM Redirection Test Tool - popup</h1>
+    <h1>RDM Redirection Test Tool - popup</h1>
 
-      <input type="text" id="urlinput" />
-      <label for="testrules" class='row'>Test Rules:</label>
-      <textarea name="testrules" id="testrules" cols="100" rows="10"></textarea>
-    
-      <div id="status"></div>
-      <button id="validate">Validate the rules</button>
-      <button id="save">Save</button>    
+    <nav class="menu">
+      <ul>
+        <li><a href="#currentDomain">Current domain</a></li>
+        <li><a href="#allDomain">All stored information</a></li>
+      </ul>
+    </nav>
 
-      <div id="test">
-        <button id="getdata">Get data</button>
-        <button id="clearStore">Clear all the store</button>
-        <button id="clearTab">Clear stored information for this tab</button>
+    <div id="currentDomain" class="flex">
+        <h2>Current Domain</h2>
+        <input type="text" id="urlinput" />
+        <h2 for="testrules" class='row'>Test Rules:</h2>
+        <textarea name="testrules" id="testrules" cols="100" rows="10"></textarea>
+      
+        <div id="status"></div>
+        <button id="validate">Validate the rules</button>
+        <button id="save">Save</button>    
+  
+        <div class="dev">
+          <button id="getdata">Reload data</button>
+        </div>
+    </div> <!-- currentDomain -->
+
+    <div id="allDomain" class="flex">
+      <h2 for="TableOfRules" class='row'>Table of Rules:</h2>
+      <div id="tableCtrl">
+          <button id="getfulldata">Get All the Data</button>
       </div>
+      <table id="TableOfRules">
+        <thead>
+          <tr>
+            <td class="domain">domain</td>
+            <td class="rules">rules</td>
+          </tr>
+        </thead>
+        <tbody id="TableOfRulesBody">
+<!--
+            <tr class="storedData">
+              <td class="key">http://...</td>
+              <td class="value">{json data here}</td>
+            </tr>
+  -->        
+          </tbody>
+        <tfoot>
+            <tr>
+              <td class="key">domain</td>
+              <td class="value">rules</td>
+            </tr>                
+        </tfoot>
+      </table>
 
-    </div>
+      <div class="dev">
+          <button id="clearStore">Clear all the store</button>
+          <button id="clearTab">Clear stored information for this tab</button>
+        </div>
+  
+    </div> <!-- allDomain -->
+
+  </div> <!-- container -->
 </body>
 <script src="popup.js"></script>
 </html>

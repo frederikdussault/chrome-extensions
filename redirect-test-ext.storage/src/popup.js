@@ -8,7 +8,7 @@
  */
 function getCurrentTabUrl(callback) {
 
-  //debugger;
+  ////debugger;
 
   let queryInfo = {
     active: true,
@@ -17,7 +17,7 @@ function getCurrentTabUrl(callback) {
 
   chrome.tabs.query(queryInfo, (tabs) => {
 
-    //debugger;
+    ////debugger;
 
     let tab = tabs[0];
     // let url = tab.url; 
@@ -38,18 +38,20 @@ function getCurrentTabUrl(callback) {
 // current.
 document.addEventListener('DOMContentLoaded', () => {
 
-  ////debugger;
+  //////debugger;
 
   /* Popup action functions */
 
-  const nTestrules      = document.getElementById('testrules'),
-        nUrlinput       = document.getElementById('urlinput'),
-        nStatustext     = document.getElementById('status'),
-        nValidatebtn    = document.getElementById('validate'),
-        nSavebtn        = document.getElementById('save'),
-        nGetdatabtn     = document.getElementById('getdata'),
-        nClearStorebtn  = document.getElementById('clearStore'),
-        nClearTabbtn    = document.getElementById('clearTab');
+  const nTestrules        = document.getElementById('testrules'),
+        nUrlinput         = document.getElementById('urlinput'),
+        nStatustext       = document.getElementById('status'),
+        nTableOfRulesBody = document.getElementById('TableOfRulesBody'),
+        nGetfulldata      = document.getElementById('getfulldata'),
+        nValidatebtn      = document.getElementById('validate'),
+        nSavebtn          = document.getElementById('save'),
+        nGetdatabtn       = document.getElementById('getdata'),
+        nClearStorebtn    = document.getElementById('clearStore'),
+        nClearTabbtn      = document.getElementById('clearTab');
 
   let tabURL = "";
 
@@ -58,9 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Validates test rules - must be well formated json
   function validate_rules() {
 
-    //debugger;
+    ////debugger;
     console.log( "in validate_rules method" );
-    message( "Validating ...  // Code to be added" );
+    message( "Validating ..." );
 
     let valid = JSON.isValid( nTestrules.value );
 
@@ -81,14 +83,49 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log( data );
 
     nUrlinput.value = url;
-
     nTestrules.value = data.testRules;
+  }
+
+  /**
+   * @param {chrome storage entries} storedData
+   */
+
+  function updateTableOfRules(storedData) {
+    console.trace();
+    console.table(storedData);
+
+    for (let item in storedData)     {
+      if( storedData.hasOwnProperty( item ) ) {
+
+        let row = document.createElement('tr');
+        row.setAttribute("class", "storedData");
+
+        let dataType = typeof(storedData[item]);
+        let value = "";
+
+        if ( "object" == typeof(storedData[item]) ) {
+          console.table(storedData[item]);
+          if ( !!storedData[item]["testRules"] ) 
+            value = storedData[item]["testRules"].toString();
+        } else {
+          console.log(storedData[item]);
+          value = storedData[item];
+        }
+
+        row.innerHTML = 
+          `<td class="key">${item}</td><td class="value">${value}</td>`;
+
+        nTableOfRulesBody.innerHTML = "";
+        nTableOfRulesBody.appendChild(row);
+
+      }
+    }
   }
 
   function message(text, opts) {
     const defaultOpts = {
       class: 'msg',
-      delay: 1000
+      delay: 700
     };
 
     opts = {...defaultOpts, ...opts};
@@ -101,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   JSON.isValid = (jsonObj) => {
-      debugger;
+      //debugger;
       try {
           JSON.parse( jsonObj );
           
@@ -129,31 +166,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   }
   
-
-
   /* Tab action functions */
 
   getCurrentTabUrl( (tab, url) => {  // this closure is the callback
 
-    debugger;
+    //debugger;
     console.log('tab: '); console.log(tab);
 
     let storedData = {};
     tabURL = url;
 
-    getStoredItems(tabURL);
-
-    nSavebtn.addEventListener    ( 'click', () => storeData(tabURL) );
+    nSavebtn.addEventListener      ( 'click', () => storeData(tabURL) );
     nGetdatabtn.addEventListener   ( 'click', () => getStoredItems(tabURL) );
     nClearStorebtn.addEventListener( 'click', () => clearAllStore() );
     nClearTabbtn.addEventListener  ( 'click', () => clearURLStore(tabURL) );
+
+    nGetfulldata.addEventListener  ( 'click', () => getAllStoredItems() );
+    
+    nGetdatabtn.click();
 
     /* Methods */
 
     // Saves options to chrome.storage
     function storeData(url) {
       
-      debugger;
+      //debugger;
 
       // get data from form
       storedData = getUIData();
@@ -168,14 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
       items[url] = storedData;
     
       chrome.storage.sync.set(items, function() {
-          ////debugger;
-
-          console.log( "Post storage set - url: " );
-          console.log( url );
-    
-          console.log( "Post storage set - jsonToStore: " );
-          console.log( jsonToStore );
-
           let opt = {}, 
               text = '';
 
@@ -195,14 +224,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // stored in chrome.storage.
     function getStoredItems(url) {
 
-      //debugger;
+      ////debugger;
       console.trace( "in getStoredItems method" );
 
       console.log( "pre storage get - storedData: " );
       console.log( storedData );
 
       chrome.storage.sync.get([url], function(items) {
-        //debugger;
+        ////debugger;
 
         const storedDataDefault = { 'testRules': '' };
 
@@ -212,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
           items = {};
         } 
         
-        let storedData = {};
+        // let storedData = {};
         if ( items[url] ) {
           // retrieve the stored data
           storedData = items[url];
@@ -240,6 +269,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (chrome.runtime.lastError) {
           text = 'Data load FAILED!';
+          opt = {class: 'error', delay: 2000};
+        } else {
+          // Update status to let user know options were saved.
+          text = 'Data loaded.';
+        }
+
+        message(text, opt);
+      });
+    }
+
+    function getAllStoredItems() {
+      ////debugger;
+      chrome.storage.sync.get(null, function(items) {
+        ////debugger;
+
+        if ( chrome.runtime.lastError || !items  ) {
+          // errored out
+          // nothing saved yet - undefined
+          items = {};
+        } 
+        
+        console.log( "post storage get - items: " );
+        console.log( items );
+
+        updateTableOfRules(items)
+
+        let opt = {}, 
+            text = ''
+
+        if (chrome.runtime.lastError) {
+          text = 'Full data load FAILED!';
           opt = {class: 'error', delay: 2000};
         } else {
           // Update status to let user know options were saved.
