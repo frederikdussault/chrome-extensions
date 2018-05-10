@@ -71,13 +71,7 @@ let execRedirectionTest = function( selectedTestblockKeys ) {
         console.log(`Number of records to process: ${testRecords.length}.`);
         
         let promises = [];
-
-        let headers = new Headers();
-        let hdrInit = { method: 'HEAD',
-                    headers: headers,
-                    mode: 'cors',
-                    cache: 'default' };
-
+        const hdrInit = { method: 'HEAD', mode: 'cors' };
 
         //FIXME: to avoid DoS blockage, split the total records in N-elements chunks
 
