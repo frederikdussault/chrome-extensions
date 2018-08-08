@@ -28,8 +28,8 @@ module.exports = function (grunt) {
             }
         },
         eslint: {
-            all: ['**/*.js', '**/*.json', '!node_modules/*']
-        },      
+            target: ['**/*.js', '**/*.json', '!node_modules/*']
+        },
         watch: {
             scripts: {
                 files: ['**/*.js', '**/*.json'], 
@@ -38,9 +38,9 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.loadNpmTasks('eslint-grunt');
+    /* grunt.loadNpmTasks('eslint-grunt');
     grunt.loadNpmTasks('grunt-newer');
-    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-watch'); */
 
     grunt.registerTask('default', ['newer:eslint', 'watch']);
     
