@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+!wordpress-information
+!redirect-test-ext
+
+>>>>>>> 333152e17bc88f81797cc4597c5e286f82b489f1
 **/*-lock.json
 .eslintrc.json
 .vscode
@@ -64,3 +70,7 @@ typings/
 .env
 
 !wordpress-information
+<<<<<<< HEAD
+=======
+!redirect-test-ext
+>>>>>>> 333152e17bc88f81797cc4597c5e286f82b489f1

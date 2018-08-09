@@ -1,0 +1,71 @@
+<!doctype html>
+<!--
+ This page is shown when the extension button is clicked, because the
+ "browser_action" field in manifest.json contains the "default_popup" key with
+ value "popup.html".
+ -->
+<html>
+  <head>
+    <title>RDM Wordpress Information</title>
+    <style type="text/css">
+      body {
+        margin: 10px;
+        white-space: nowrap;
+      }
+
+      h1 {
+        font-size: 15px;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: column;
+        margin: 5px;
+        width: 290px;
+        align-items: center;
+      }
+
+      #container span, 
+      #container #dropdown,
+      #container #testselector {
+        flex: auto;
+      }
+
+      #container #testselector {
+        width: 230px;
+      }
+
+      #container #testselector div {
+        align-content: normal;
+        flex-wrap: wrap;
+        justify-content: start;
+      }
+    </style>
+
+    <!--
+      - JavaScript and HTML must be in separate files: see our Content Security
+      - Policy documentation[1] for details and explanation.
+      -
+      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
+    -->
+    <script src="tasks/test-series.js"></script>
+    <script src="popup.js"></script>
+  </head>
+
+  <body>
+    <h1>RDM Webdeveloper Redirect Testing tool</h1>
+    <div id="container">
+      <span>What information would you like?</span>
+      <select id="dropdown">
+        <option selected disabled value=''>Select a task</option>
+        <!-- options added dynamicaly -->
+      </select>
+      <div>
+        <h3>Select a redirection test</h3>
+        <div id="testselector">
+          <!-- radio buttons added dynamicaly -->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

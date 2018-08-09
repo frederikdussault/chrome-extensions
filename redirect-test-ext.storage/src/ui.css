@@ -1,0 +1,16 @@
+/* 
+$basefontsize : 18px;
+*/
+
+body { 
+    font-size: 18px;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif 
+}
+
+#datagrid {
+    border: 1px solid gray;
+}
+
+#datagrid thead, #datagrid tr th, #datagrid th  {
+    color: firebrick;
+}
