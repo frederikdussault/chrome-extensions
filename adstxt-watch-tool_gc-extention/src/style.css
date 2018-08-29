@@ -1,0 +1,50 @@
+body { min-width: 860px;}
+
+/* parent container is a flex box */
+#container {
+    width: 100%;
+    padding: 0 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.container {
+    margin: 10px 0px;
+}
+
+label {
+    font-size: 1rem;
+    right: 2rem;
+}
+
+input#versiontext {
+    margin-left: 0.5rem;
+}
+
+#status,
+button {
+    margin: 2px;
+}
+button {
+    padding: 0.25rem 0.35rem;
+    outline: none;
+    font-size: 0.7rem;
+}
+
+table {
+    width: 700px;
+    text-align: left;
+}
+td.error { color: red; }
+#testresults td {
+    padding:  1rem;
+}
+table .status {text-align: center;width: 25px;}
+table td.error { color: red; }
+table .site {}
+table .result {}
+table .hidden { display: none; }
+table .icon.good { background-color: green; color: white; }
+table .icon.warning { background-color: yellow; color: black; }
+table .icon.error { background-color: red; color: white; }
+
