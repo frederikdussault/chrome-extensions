@@ -1,12 +1,13 @@
-body { min-width: 860px;}
+body {width: 780px;padding: 10px;margin: 0;}
 
 /* parent container is a flex box */
 #container {
     width: 100%;
-    padding: 0 14px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin: 0;
+    padding: 0;
 }
 .container {
     margin: 10px 0px;
@@ -32,13 +33,20 @@ button {
 }
 
 table {
-    width: 700px;
+    width: 760px;
     text-align: left;
+    margin: 0;
 }
-td.error { color: red; }
-#testresults td {
+table th {
+    padding: 0.75rem 1rem;
+    background-color: black;
+    color: white;
+    font-size: 0.75rem;
+}
+table td {
     padding:  1rem;
 }
+td.error { color: red; }
 table .status {text-align: center;width: 25px;}
 table td.error { color: red; }
 table .site {}

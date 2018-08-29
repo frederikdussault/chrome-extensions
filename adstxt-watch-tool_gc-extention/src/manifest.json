@@ -1,7 +1,12 @@
 {
   "name": "Ads.txt Watch Tool",
   "description": "This extension allows AdTech to verify the presence and version of ads.txt file on a list of servers.",
-  "version": "1.1",
+  "version": "1.1.1",
+
+  "icons": {
+    "48": "icon.png", 
+    "128": "icon.png"
+  },
 
   "permissions": [
     "<all_urls>"
