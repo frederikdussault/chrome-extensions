@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "WebProducer Wordpress information from active tab extension",
+  "description": "This extension allows the user to get information from the current page DOM.",
+  "version": "1.0",
+
+  "icons": {
+    "48": "icon.png", 
+    "128": "icon.png"
+  },
+
+  "browser_action": {
+    "default_title": "WebProducer Wordpress Information",
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab"
+  ]
+}
