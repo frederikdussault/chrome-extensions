@@ -27,19 +27,54 @@
   <div id="container">
       <h1>RDM Redirection Test Tool - popup</h1>
 
+      <h2 class='row'>Domain</h2>
       <input type="text" id="urlinput" />
-      <label for="testrules" class='row'>Test Rules:</label>
-      <textarea name="testrules" id="testrules" cols="100" rows="10"></textarea>
-    
-      <div id="status"></div>
-      <button id="validate">Validate the rules</button>
-      <button id="save">Save</button>    
 
-      <div id="test">
-        <button id="getdata">Get data</button>
-        <button id="clearStore">Clear all the store</button>
-        <button id="clearTab">Clear stored information for this tab</button>
+      <div id="rules" class="container">
+        <h2 class='row'>Test Rules</h2>
+        <textarea name="testrules" id="testrules" cols="100" rows="10" placeholder=
+'{
+  "test_group_name": {
+    "label": "ui_group_label",
+    "arr": [
+          {"reqUrl":"/en/", "expStatus":200, "expUrl":"/en/", "reqNotes":"", "fail":0}
+      ]
+  }
+}' 
+        ></textarea>
+  
+        <h3>Rule code sample</h3>
+        <pre id="testrulesinfo">
+  {
+    "test_group_name": {
+      "label": "ui_group_label",
+      "arr": [
+            {"reqUrl":"/en/", "expStatus":200, "expUrl":"/en/", "reqNotes":"", "fail":0}
+        ]
+    }
+  }
+        </pre>
+  
+  
+        <div id="status"></div>
+        <button id="validate">Validate the rules</button>
+        <button id="save">Save</button>    
+  
+        <div class="uitest">
+          <button id="getdata">Get data</button>
+          <button id="clearStore">Clear all the store</button>
+          <button id="clearTab">Clear stored information for this tab</button>
+        </div>
       </div>
+
+      <div id="tests" class="container">
+        <h2 class='row'>Test Results</h2>
+        <button id="btnGoTest">Test de redirects</button>    
+        <div id="testresults"></div>          
+      </div>
+
+
+
 
     </div>
 </body>

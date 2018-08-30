@@ -42,14 +42,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Popup action functions */
 
-  const nTestrules      = document.getElementById('testrules'),
-        nUrlinput       = document.getElementById('urlinput'),
-        nStatustext     = document.getElementById('status'),
-        nValidatebtn    = document.getElementById('validate'),
-        nSavebtn        = document.getElementById('save'),
-        nGetdatabtn     = document.getElementById('getdata'),
-        nClearStorebtn  = document.getElementById('clearStore'),
-        nClearTabbtn    = document.getElementById('clearTab');
+  const nUrlinput       = document.querySelector('#urlinput'),
+        nTestrules      = document.querySelector('#testrules'),        
+        nStatustext     = document.querySelector('#status'),
+        nValidatebtn    = document.querySelector('#validate'),
+        nSavebtn        = document.querySelector('#save'),
+        nGetdatabtn     = document.querySelector('#getdata'),
+        nClearStorebtn  = document.querySelector('#clearStore'),
+        nClearTabbtn    = document.querySelector('#clearTab'),
+        nbtnGoTest      = document.querySelector('#btnGoTest'),
+        ntestresults   = document.querySelector('#testresults');
 
   let tabURL = "";
 
@@ -147,6 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nGetdatabtn.addEventListener   ( 'click', () => getStoredItems(tabURL) );
     nClearStorebtn.addEventListener( 'click', () => clearAllStore() );
     nClearTabbtn.addEventListener  ( 'click', () => clearURLStore(tabURL) );
+    nbtnGoTest.addEventListener  ( 'click', () => testRedirects(tabURL) );
 
     /* Methods */
 
