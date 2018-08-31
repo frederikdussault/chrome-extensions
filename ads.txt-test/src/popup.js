@@ -16,11 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
         altProtocol = 'http://',
         currentVersion = 'v3.7';
   
+        
+  var siteMetas = []; // keep stats of all sites
+
   nVersiontext.value = currentVersion;
   nTestbtn.addEventListener( 'click', () => test() );
   nShowErrorsbtn.addEventListener( 'click', () => hideRows('good') );
   nShowGoodbtn.addEventListener( 'click', () => hideRows('error') );
   nShowAllbtn.addEventListener( 'click', () => showAll() );
+
+  
 
   function hideRows(type) {
     let rows = document.querySelectorAll('#testresults tr');
@@ -51,9 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     reset();
 
+    // sites defined in data/site.js
     sites.forEach((site) => {
-      console.log( site );
-
       fetchSite(site, addElement);
     });
   }
@@ -63,41 +67,88 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function fetchSite(site, callback) {
-    let file = site + '/ads.txt';
-    const myRequest = new Request(protocol+file);
+    const file = site + '/ads.txt',
+          requestUrl = protocol + file,
+          myRequest = new Request(requestUrl);
     var res = {};
+    
+    // keep stats of all sites
+    siteMetas[file] = {pass:false};
 
-    console.log(file);
+    /**
+     cases
+     200: content is received
+       * response.ok == true
+       * redirected == false: final URL == requested URL
+       * redirected == true: final URL != requested URL
+         + should display original and final URL (if different)
+     404: not found
+       * no data received; response.ok == false
+       - could it be found if we try with http:// ?
+     
+
+     */
+
+    function getMeta (response, file) {
+      console.log(file);
+      console.table(response);
+
+      res = {
+        headers: response.headers,
+        ok: response.ok,
+        redirected: response.redirected,
+        status: response.status,
+        statusText: response.statusText,
+        type: response.type,
+        url: response.url,
+        file: file,
+        content: ''
+      };
+
+      // keep stats of all sites
+      siteMetas[file].meta = res;
+
+      return response;
+    }
+
+    function handleStatus (fileContent, res) {
+      console.log(file);
+      console.table(res);
+
+      let destinationUrl = '',
+          responseText = '';
+
+      if ( res.redirected ) destinationUrl = res.url;
+
+      // TODO revise the logic to capture non 200
+
+      if ( res.ok ) {
+        res.content = fileContent;
+        responseText = fileContent.split('\n')[0];
+      } else {
+        responseText = 'ERROR: ' + res.status + ' ' + res.statusText;
+      }
+
+      callback(requestUrl, destinationUrl, responseText);
+
+      // keep stats of all sites
+      res.pass = true;
+  }
 
     // get file content and add results to result table
     fetch(myRequest)
-      .then(response => {
-        console.table(response);
-        res = response;
-        const responseText = response.text() 
-
-        if (response.status === 200) {
-          return responseText;
-        } else if ( 
-            (response.status >= 100 && response.status < 200) || 
-            response.status > 200
-          ) {
-            return (responseText) ? responseText : 'ERROR: no data returned';
-        } else {
-          callback('', `ERROR: Response code: ${response.status}`);
-          throw new Error('Something went wrong on api server!');
-        }
-      })
-      .then(response => {
-        callback(file, response.split('\n')[0]);
-      })
+      .then(response => getMeta (response, file))
+      .then(response => response.text())
+      .then(fileContent => handleStatus (fileContent, siteMetas[file].meta))
       .catch( (error) => {
+        // console.table(response);  // response not defined in catch
+        console.table(error);
         console.error(error);
-        callback(file, `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
+        callback(file, '', `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
       });
   }
 
-  function addElement (name, data) { 
+  function addElement (name, redirectedTo, data) { 
     let newRow = document.createElement("tr"),
         status = (data.includes('ERROR:')) ? 'error' : '',
         version = nVersiontext.value,
