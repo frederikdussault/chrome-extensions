@@ -14,18 +14,17 @@ document.addEventListener('DOMContentLoaded', () => {
         nVersiontext = document.querySelector('#versiontext'),
         protocol = 'https://',
         altProtocol = 'http://',
-        currentVersion = 'v3.7';
-  
-        
+        currentVersion = 'v3.8';
+   
   var siteMetas = []; // keep stats of all sites
 
   nVersiontext.value = currentVersion;
+
   nTestbtn.addEventListener( 'click', () => test() );
   nShowErrorsbtn.addEventListener( 'click', () => hideRows('good') );
   nShowGoodbtn.addEventListener( 'click', () => hideRows('error') );
   nShowAllbtn.addEventListener( 'click', () => showAll() );
 
-  
 
   function hideRows(type) {
     let rows = document.querySelectorAll('#testresults tr');
