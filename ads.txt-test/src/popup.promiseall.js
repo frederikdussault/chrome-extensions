@@ -1,5 +1,3 @@
-/* global siteMetas:false */
-
 // This extension inject a script in the current tab. Script from which we will fetch information from the DOM.
 // The user can select from the testrules which information he wants for the
 // current.
@@ -18,8 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         altProtocol = 'http://',
         currentVersion = 'v3.8';
    
-  // sitemetas.js - keep stats of all sites
-  siteMetas.init();
+  var siteMetas = []; // keep stats of all sites
 
   nVersiontext.value = currentVersion;
 
@@ -54,17 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function test() {
 
     //debugger;
-    console.log( "AdTechWatch: Starting site watch" );
+    console.log( "Starting site watch" );
 
     reset();
 
-    // will fire processDone event
-    siteMetas.processAll();
-    
-
     // sites defined in data/site.js
     sites.forEach((site) => {
-      fetchSite(site, cbAddUiElement);
+      fetchFiles(site, cbAddUiElement);
     });
   }
 
@@ -80,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
           myRequest = new Request(requestUrl);
     var res = {};
     
-    // siteMetas[file] = {pass:false};
+    // keep stats of all sites
+    siteMetas[file] = {pass:false};
 
     /**
      cases
@@ -96,24 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
      */
 
-    function getMeta (response, file) {
-      console.log("AdTechWatch getMeta:")
+    function getMetas (response, file) {
       console.log(file);
       console.table(response);
 
-      // keep stats of all sites
-      siteMetas.add(site, protocol, {
-        headers: response.headers,
-        ok: response.ok,
-        redirected: response.redirected,
-        status: response.status,
-        statusText: response.statusText,
-        type: response.type,
-        url: response.url,
-        file: file,
-        content: ''
-      });
-/*       siteMetas[file].meta = {
+      res = {
         headers: response.headers,
         ok: response.ok,
         redirected: response.redirected,
@@ -124,12 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
         file: file,
         content: ''
       };
- */
+
+      // keep stats of all sites
+      siteMetas[file].meta = res;
+
       return response;
     }
 
     function handleStatus (fileContent, res) {
-      console.log("AdTechWatch handleStatus: ")
       console.log(file);
       console.table(res);
 
@@ -155,16 +138,116 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // get file content and add results to result table
     fetch(myRequest)
-      .then(response => getMeta (response, file))
+      .then(response => getMetas (response, file))
       .then(response => response.text())
       .then(fileContent => handleStatus (fileContent, siteMetas[file].meta))
       .catch( (error) => {
-        console.log("AdTechWatch fetchsite:")
         // console.table(response);  // response not defined in catch
         console.table(error);
         console.error(error);
         callback(file, '', `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
       });
+  }
+
+  //TODO revise to use promiseAll - return array of promises
+  function fetchFiles(site, callback) {
+    // site will be received as http://www.domainname.com and https://www.domainname.com on a subsequent call 
+
+    const filepath = site + '/ads.txt';
+    var res = {};
+    
+    // keep stats of all sites
+    siteMetas[filepath] = {pass:false};
+
+    /**
+     cases
+     200: content is received
+       * response.ok == true
+       * redirected == false: final URL == requested URL
+       * redirected == true: final URL != requested URL
+         + should display original and final URL (if different)
+     404: not found
+       * no data received; response.ok == false
+       - could it be found if we try with http:// ?
+     */
+
+    function getMetas (response, file) {
+      console.log(file);
+      console.table(response);
+
+      res = {
+        headers: response.headers,
+        ok: response.ok,
+        redirected: response.redirected,
+        status: response.status,
+        statusText: response.statusText,
+        type: response.type,
+        url: response.url,
+        file: file,
+        content: ''
+      };
+
+      // keep stats of all sites
+      siteMetas[file].meta = res;
+
+      return response;
+    }
+
+    function handleStatus (fileContent, res) {
+      console.log(filepath);
+      console.table(res);
+
+      let destinationUrl = '',
+          responseText = '';
+
+      if ( res.redirected ) destinationUrl = res.url;
+
+      // TODO revise the logic to capture non 200
+
+      if ( res.ok ) {
+        res.content = fileContent;
+        responseText = fileContent.split('\n')[0];
+      } else {
+        responseText = 'ERROR: ' + res.status + ' ' + res.statusText;
+      }
+
+      callback(requestUrl, destinationUrl, responseText);
+
+      // keep stats of all sites
+      res.pass = true;
+    }
+
+    function fetchAll(urls) {
+      return Promise.all(
+        urls.map(url => fetch(url)
+          .then(r => r.json())
+          .then(data => ({ data, url }))
+          .catch(error => ({ error, url }))
+        )
+      )
+    }
+
+    // TODO: update to use promiseAll - will return an array of promises
+    new Promise.all([fetch('https://'+site), fetch('http://'+site)]) // return an Array of promise reponses
+        .then(
+          response => getMetas(response, filepath)
+        ) // store Metas in sites array; pass the Array of promises reponses
+        .then(response => {
+          // map response array and get an array of texts
+          // TODO refactor to use array.forEach loop to return an array of results texts
+          response.text();
+        }) 
+        .then(
+          // handle files' network status; add statuses to ui result table  
+          // TODO refactor to process the results array
+          fileContent => handleStatus (fileContent, siteMetas[filepath].meta)
+        ) 
+        .catch( (error) => {
+          // console.table(response);  // response not defined in catch
+          console.table(error);
+          console.error(error);
+          callback(filepath, '', `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
+        });
   }
 
   function cbAddUiElement (name, redirectedTo, data) { 

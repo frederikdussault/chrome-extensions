@@ -1,8 +1,3 @@
-var _sites = [
-'www.wrongsite.ca',
-'www.1019rock.ca'
-];
-
 var sites = [
     'www.educatall.com', 
     'www.1019rock.ca', 
