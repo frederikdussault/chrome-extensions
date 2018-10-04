@@ -38,7 +38,7 @@ var siteMetas = {
     statusText: false,
     type: "",
     url: "",
-    file: "",
+    filepath: "",
     content: "",
     pass: false,
     error: {}
@@ -79,23 +79,19 @@ var siteMetas = {
     console.log(`AdTechWatch siteMetas process: ${domain} `);
 
     this.protocols.forEach((protocol) => {
-      let file = protocol+domain+'/ads.txt';
-      var res = this.deft; // assign default values
-      var myRequest = new Request(file);
-      console.log(`AdTechWatch siteMetas process: ${file} `);
 
-      fetch(myRequest)
-      .then(response => { //see getMeta
-        //add metas to site results
-        console.log(`AdTechWatch siteMetas process fetch response: `, response);
+      // callback getMeta
+      function getMeta (response) {
+        // forEach loop context variables: file, domain, protocol
 
-        console.log("AdTechWatch getMeta:")
+        debugger;
+  
+        console.log(`AdTechWatch siteMetas process fetch getMeta: `);
         console.log(file);
         console.table(response);
-
-
-        //TODO: Continue here.  need to catch non-200 so we know what happen with these files
-        res = {
+  
+        // keep stats of all sites
+        siteMetas.add(domain, protocol, {
           headers: response.headers,
           ok: response.ok,
           redirected: response.redirected,
@@ -104,41 +100,58 @@ var siteMetas = {
           type: response.type,
           url: response.url,
           filepath: file,
-        };
+        });
+  
+        return response;
+      } //callback getMeta
+  
+      // callback handleStatus
+      function handleStatus (fileContent, res) {
+        console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
+        console.table(res);
 
-        // process response status
-        //TODO: revise the condition - need to catch all response if there is one
-        if (response.status >= 200 && response.status < 300) {
-          this.add(domain, protocol, res);
-
-          return Promise.resolve(response)
+        debugger;
+    
+        if ( res.ok ) { // [200 .. 299]
+          res.content = fileContent.split('\n')[0];
+          res.pass = true;
+        } else if (res.redirected)  {
+          //TODO see if filecontent is passed when redirected
+          let content = (fileContent) ? fileContent.split('\n')[0] : '';
+          res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
         } else {
-
-          //TODO: Do not throw an error, just reject
-          var error = new Error(response.statusText || response.status)
-          error.response = response
-
-          //Add error to res
-          res.error = error;
-
-          this.add(domain, protocol, res);
-
-          return Promise.reject(error)
+          res.content = `ERROR: ${res.status} ${res.statusText}`;
         }
+      } //callback handleStatus
+  
+      let file = protocol+domain+'/ads.txt';
+      var res = this.deft; // assign default values
+      console.log(`AdTechWatch siteMetas process: ${file} `);
+
+      fetch(file, {
+        mode:"no-cors",
+        cache: "no-cache",
+        redirect: "follow",
+        //referrer: "no-referrer"
       })
-      .then(response => response.text()) // get file content
-      .then(fileContent => { //see handleStatus
-        console.log(`AdTechWatch siteMetas process fetch content: `, fileContent);
-        //TODO add content to sites[domain][protocol].results.content
-      })
+      .then(response => getMeta (response))
+      .then(response => response.text())
+      .then(fileContent => handleStatus (fileContent, this.sites[domain][protocol].results))
       .catch( (error) => {
+
+        debugger;
 
         //TODO what happen is not ok?  Does it fall here?
         //TODO does reject fall here? 
 
         console.log("AdTechWatch fetchsite: error caught")
         console.table(error);
-        console.error(error);
+
+        res.error = error;
+        res.filepath = file;
+
+        //TODO verify if .update works in that case.  otherwise, use .add
+        this.update(domain, protocol, res);
       });
 
 
@@ -155,14 +168,34 @@ var siteMetas = {
   add:  function (domain, protocol, results = this.deft) {
     if ( !this.sites[domain] ) { this.sites[domain] = [] };
     if ( !this.sites[domain][protocol] ) { this.sites[domain][protocol] = {}; }
+    let domprot = this.sites[domain][protocol];
 
-    this.sites[domain][protocol].results = {...this.deft, ...results}; 
+    // take default and update with results passed
+    domprot.results = {...this.deft, ...results};
 
-    console.log(`AdTechWatch siteMetas: ${protocol}${domain} `, this.sites[domain][protocol]);
+    console.log(`AdTechWatch siteMetas: ${protocol}${domain} `, domprot);
 
   },
 
   /*
+  @param domain string
+  @param protocol string
+  @param result object
+  @returns none
+  */
+ update:  function (domain, protocol, results) {
+  if ( !this.sites[domain] ) { this.sites[domain] = [] };
+  if ( !this.sites[domain][protocol] ) { this.sites[domain][protocol] = {}; }
+  let domprot = this.sites[domain][protocol];
+
+  // take current values and update with results passed
+  domprot.results = {...domprot.results, ...results};
+
+  console.log(`AdTechWatch siteMetas: ${protocol}${domain} `, domprot);
+
+},
+
+/*
   @param domain string
   @param protocol string
   @returns result object

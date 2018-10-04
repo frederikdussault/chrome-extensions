@@ -1,4 +1,5 @@
 var sites = [
+    'zzz.notgood.zzz', 
     'www.educatall.com', 
     'www.1019rock.ca', 
     'www.1053rock.ca', 
