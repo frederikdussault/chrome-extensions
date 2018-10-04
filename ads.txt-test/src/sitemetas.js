@@ -41,8 +41,9 @@ var siteMetas = {
     file: "",
     content: "",
     pass: false,
+    error: {}
   },
-  protocols: ["https://", "http://"],
+  protocols: ["http://", "https://"],
 
   /*
   @param domain string
@@ -63,6 +64,8 @@ var siteMetas = {
     console.log(`AdTechWatch siteMetas processAll:`);
     
     // sites defined in data/site.js
+
+    //TODO convert to promiseAll and trigger processFinished event
     this.sites.forEach((domain) => {
       this.process(domain);
     });
@@ -77,7 +80,7 @@ var siteMetas = {
 
     this.protocols.forEach((protocol) => {
       let file = protocol+domain+'/ads.txt';
-      var res = {};
+      var res = this.deft; // assign default values
       var myRequest = new Request(file);
       console.log(`AdTechWatch siteMetas process: ${file} `);
 
@@ -90,6 +93,8 @@ var siteMetas = {
         console.log(file);
         console.table(response);
 
+
+        //TODO: Continue here.  need to catch non-200 so we know what happen with these files
         res = {
           headers: response.headers,
           ok: response.ok,
@@ -98,44 +103,48 @@ var siteMetas = {
           statusText: response.statusText,
           type: response.type,
           url: response.url,
-          file: file,
-          content: ''
+          filepath: file,
         };
 
-        this.add(domain, protocol, res);
-
-        //TODO: Continue here.  need to catch non-200 so we know what happen with these files
-
         // process response status
+        //TODO: revise the condition - need to catch all response if there is one
         if (response.status >= 200 && response.status < 300) {
+          this.add(domain, protocol, res);
+
           return Promise.resolve(response)
         } else {
 
-          //TODO: record the status and throw
+          //TODO: Do not throw an error, just reject
           var error = new Error(response.statusText || response.status)
           error.response = response
+
+          //Add error to res
+          res.error = error;
+
+          this.add(domain, protocol, res);
+
           return Promise.reject(error)
         }
-
-        //return response;
       })
       .then(response => response.text()) // get file content
       .then(fileContent => { //see handleStatus
         console.log(`AdTechWatch siteMetas process fetch content: `, fileContent);
-
+        //TODO add content to sites[domain][protocol].results.content
       })
       .catch( (error) => {
+
+        //TODO what happen is not ok?  Does it fall here?
+        //TODO does reject fall here? 
+
         console.log("AdTechWatch fetchsite: error caught")
-        // console.table(response);  // response not defined in catch
         console.table(error);
         console.error(error);
-        callback(file, '', `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
       });
 
 
-    });
+    }); // forEach
     
-  },
+  }, // process()
 
   /*
   @param domain string
