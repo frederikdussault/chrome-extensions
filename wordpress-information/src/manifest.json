@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
 
-  "name": "WebProducer Wordpress information from active tab extension",
+  "name": "WebProducer Wordpress information",
   "description": "This extension allows the user to get information from the current page DOM.",
   "version": "1.0",
 
