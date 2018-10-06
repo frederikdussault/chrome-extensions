@@ -11,14 +11,14 @@ module.exports = function (grunt) {
         pkg: grunt.file.readJSON('package.json'),
         newer: {
             options: {
-              tolerance: 1000
+                tolerance: 1000
             }
         },
         jshint: {
             files: [
                 'package.json',
                 'Gruntfile.js',
-                'src/*.js*',
+                'src/**/*.js*',
             ],
             options: {
                 // options here to override JSHint defaults
@@ -26,7 +26,7 @@ module.exports = function (grunt) {
                     console: true,
                     document: true,
                     latedef: true,
-                    curly:true,
+                    curly: true,
                     nonbsp: true,
                     nonew: true,
                 },
@@ -35,23 +35,38 @@ module.exports = function (grunt) {
         },
         concat: {
             options: {
-                separator: '\n\n',
+                separator: '\n\n/*==============*/\n\n',
             },
             scripts: {
+                src: ['src/data/*.js', 'src/sitemetas.js', 'src/ui.js', 'src/popup.js'],
+                dest: 'dist/popup.js',
             },
-            styles: {
-            },
+            styles: {},
         },
         sass: {
             options: {
                 sourceMap: true
             },
-            files: { 'src/ui.css': 'src/ui.scss' }  // does not find that
+            files: {
+                'dist/style.css': 'src/style.scss'
+            } // does not find that
+        },
+        // copy but does not clean files (remove obsolete)
+        copy: {
+            html: {
+                expand: true,
+                cwd: 'src/',
+                src: ['*.html, *.png, manifest.json'],
+                dest: 'dist/',
+                flatten: true,
+                filter: 'isFile',
+            },
         },
         watch: {
             scripts: {
-                files: ['<%= jshint.files %>'], 
-                tasks: ['newer:jshint', 'concat']            },
+                files: ['<%= jshint.files %>'],
+                tasks: ['newer:jshint', 'concat', 'copy']
+            },
             styles: {
                 files: ['src/*.scss'],
                 tasks: ['sass']
@@ -61,11 +76,12 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-newer');
     grunt.loadNpmTasks('grunt-contrib-watch');
 
-    grunt.registerTask('build',      [
-        'newer:jshint', 'concat', 'sass'
+    grunt.registerTask('build', [
+        'newer:jshint', 'concat', 'sass', 'copy'
     ]);
-    grunt.registerTask('default',     ['build', 'watch']);    
+    grunt.registerTask('default', ['build', 'watch']);
 };
