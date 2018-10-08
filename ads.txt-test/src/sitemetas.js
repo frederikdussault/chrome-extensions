@@ -1,3 +1,6 @@
+/*eslint no-unused-vars: 0*/
+/*global sites siteMetas ui*/
+
 /* 
 siteMetas element structure
 [domain][protocol] : {
@@ -167,7 +170,7 @@ var siteMetas = {
   */
   add: function (domain, protocol, results = this.deft) {
     if (!this.sites[domain]) {
-      this.sites[domain] = []
+      this.sites[domain] = [];
     };
     if (!this.sites[domain][protocol]) {
       this.sites[domain][protocol] = {};
@@ -175,7 +178,8 @@ var siteMetas = {
     let domprot = this.sites[domain][protocol];
 
     // take default and update with results passed
-    domprot.results = { ...this.deft,
+    domprot.results = { 
+      ...this.deft,
       ...results
     };
 
@@ -191,7 +195,7 @@ var siteMetas = {
   */
   update: function (domain, protocol, results) {
     if (!this.sites[domain]) {
-      this.sites[domain] = []
+      this.sites[domain] = [];
     };
     if (!this.sites[domain][protocol]) {
       this.sites[domain][protocol] = {};
@@ -199,7 +203,8 @@ var siteMetas = {
     let domprot = this.sites[domain][protocol];
 
     // take current values and update with results passed
-    domprot.results = { ...domprot.results,
+    domprot.results = { 
+      ...domprot.results,
       ...results
     };
 
@@ -213,7 +218,7 @@ var siteMetas = {
     @returns result object
     */
   get: function (domain, protocol) {
-    return this.sites[domain][protocol].results
+    return this.sites[domain][protocol].results;
   },
 
   /*

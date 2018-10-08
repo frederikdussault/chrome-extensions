@@ -6,24 +6,24 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Popup action functions */
 
   const nTestbtn = document.querySelector('#btnGoTest'),
-        nShowErrorsbtn = document.querySelector('#btnShowErrors'),
-        nShowGoodbtn = document.querySelector('#btnShowGood'),
-        nShowAllbtn = document.querySelector('#btnShowAll'),
-        ntestresults = document.querySelector('#testresults'),
-        nStatustext = document.querySelector('#statustext'),
-        nVersiontext = document.querySelector('#versiontext'),
-        protocol = 'https://',
-        altProtocol = 'http://',
-        currentVersion = 'v3.8';
-   
+    nShowErrorsbtn = document.querySelector('#btnShowErrors'),
+    nShowGoodbtn = document.querySelector('#btnShowGood'),
+    nShowAllbtn = document.querySelector('#btnShowAll'),
+    ntestresults = document.querySelector('#testresults'),
+    nStatustext = document.querySelector('#statustext'),
+    nVersiontext = document.querySelector('#versiontext'),
+    protocol = 'https://',
+    altProtocol = 'http://',
+    currentVersion = 'v3.8';
+
   var siteMetas = []; // keep stats of all sites
 
   nVersiontext.value = currentVersion;
 
-  nTestbtn.addEventListener( 'click', () => test() );
-  nShowErrorsbtn.addEventListener( 'click', () => hideRows('good') );
-  nShowGoodbtn.addEventListener( 'click', () => hideRows('error') );
-  nShowAllbtn.addEventListener( 'click', () => showAll() );
+  nTestbtn.addEventListener('click', () => test());
+  nShowErrorsbtn.addEventListener('click', () => hideRows('good'));
+  nShowGoodbtn.addEventListener('click', () => hideRows('error'));
+  nShowAllbtn.addEventListener('click', () => showAll());
 
 
   function hideRows(type) {
@@ -32,9 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const row of rows) {
 
       if (row.classList.contains(type)) {
-        row.classList.add('hidden');        
+        row.classList.add('hidden');
       } else if (row.classList.contains('hidden')) {
-        row.classList.remove('hidden');        
+        row.classList.remove('hidden');
       }
     }
   }
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function test() {
 
     //debugger;
-    console.log( "Starting site watch" );
+    console.log("Starting site watch");
 
     reset();
 
@@ -69,12 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Original version
   function fetchSite(site, callback) {
     const file = site + '/ads.txt',
-          requestUrl = protocol + file,
-          myRequest = new Request(requestUrl);
+      requestUrl = protocol + file,
+      myRequest = new Request(requestUrl);
     var res = {};
-    
+
     // keep stats of all sites
-    siteMetas[file] = {pass:false};
+    siteMetas[file] = {
+      pass: false
+    };
 
     /**
      cases
@@ -90,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
      */
 
-    function getMetas (response, file) {
+    function getMetas(response, file) {
       console.log(file);
       console.table(response);
 
@@ -112,18 +114,18 @@ document.addEventListener('DOMContentLoaded', () => {
       return response;
     }
 
-    function handleStatus (fileContent, res) {
+    function handleStatus(fileContent, res) {
       console.log(file);
       console.table(res);
 
       let destinationUrl = '',
-          responseText = '';
+        responseText = '';
 
-      if ( res.redirected ) destinationUrl = res.url;
+      if (res.redirected) destinationUrl = res.url;
 
       // TODO revise the logic to capture non 200
 
-      if ( res.ok ) {
+      if (res.ok) {
         res.content = fileContent;
         responseText = fileContent.split('\n')[0];
       } else {
@@ -138,10 +140,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // get file content and add results to result table
     fetch(myRequest)
-      .then(response => getMetas (response, file))
+      .then(response => getMetas(response, file))
       .then(response => response.text())
-      .then(fileContent => handleStatus (fileContent, siteMetas[file].meta))
-      .catch( (error) => {
+      .then(fileContent => handleStatus(fileContent, siteMetas[file].meta))
+      .catch((error) => {
         // console.table(response);  // response not defined in catch
         console.table(error);
         console.error(error);
@@ -155,9 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filepath = site + '/ads.txt';
     var res = {};
-    
+
     // keep stats of all sites
-    siteMetas[filepath] = {pass:false};
+    siteMetas[filepath] = {
+      pass: false
+    };
 
     /**
      cases
@@ -171,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
        - could it be found if we try with http:// ?
      */
 
-    function getMetas (response, file) {
+    function getMetas(response, file) {
       console.log(file);
       console.table(response);
 
@@ -193,18 +197,18 @@ document.addEventListener('DOMContentLoaded', () => {
       return response;
     }
 
-    function handleStatus (fileContent, res) {
+    function handleStatus(fileContent, res) {
       console.log(filepath);
       console.table(res);
 
       let destinationUrl = '',
-          responseText = '';
+        responseText = '';
 
-      if ( res.redirected ) destinationUrl = res.url;
+      if (res.redirected) destinationUrl = res.url;
 
       // TODO revise the logic to capture non 200
 
-      if ( res.ok ) {
+      if (res.ok) {
         res.content = fileContent;
         responseText = fileContent.split('\n')[0];
       } else {
@@ -221,45 +225,51 @@ document.addEventListener('DOMContentLoaded', () => {
       return Promise.all(
         urls.map(url => fetch(url)
           .then(r => r.json())
-          .then(data => ({ data, url }))
-          .catch(error => ({ error, url }))
+          .then(data => ({
+            data,
+            url
+          }))
+          .catch(error => ({
+            error,
+            url
+          }))
         )
-      )
+      );
     }
 
     // TODO: update to use promiseAll - will return an array of promises
-    new Promise.all([fetch('https://'+site), fetch('http://'+site)]) // return an Array of promise reponses
-        .then(
-          response => getMetas(response, filepath)
-        ) // store Metas in sites array; pass the Array of promises reponses
-        .then(response => {
-          // map response array and get an array of texts
-          // TODO refactor to use array.forEach loop to return an array of results texts
-          response.text();
-        }) 
-        .then(
-          // handle files' network status; add statuses to ui result table  
-          // TODO refactor to process the results array
-          fileContent => handleStatus (fileContent, siteMetas[filepath].meta)
-        ) 
-        .catch( (error) => {
-          // console.table(response);  // response not defined in catch
-          console.table(error);
-          console.error(error);
-          callback(filepath, '', `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
-        });
+    new Promise.all([fetch('https://' + site), fetch('http://' + site)]) // return an Array of promise reponses
+      .then(
+        response => getMetas(response, filepath)
+      ) // store Metas in sites array; pass the Array of promises reponses
+      .then(response => {
+        // map response array and get an array of texts
+        // TODO refactor to use array.forEach loop to return an array of results texts
+        response.text();
+      })
+      .then(
+        // handle files' network status; add statuses to ui result table  
+        // TODO refactor to process the results array
+        fileContent => handleStatus(fileContent, siteMetas[filepath].meta)
+      )
+      .catch((error) => {
+        // console.table(response);  // response not defined in catch
+        console.table(error);
+        console.error(error);
+        callback(filepath, '', `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
+      });
   }
 
-  function cbAddUiElement (name, redirectedTo, data) { 
+  function cbAddUiElement(name, redirectedTo, data) {
     let newRow = document.createElement("tr"),
-        status = (data.includes('ERROR:')) ? 'error' : '',
-        version = nVersiontext.value,
-        label = '';
+      status = (data.includes('ERROR:')) ? 'error' : '',
+      version = nVersiontext.value,
+      label = '';
 
 
     /* validation */
 
-    if ( data.includes('ERROR:') ) {
+    if (data.includes('ERROR:')) {
       status = 'error';
       label = 'ERROR';
     } else if (data.includes('WARNING:')) {
@@ -274,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* insertion in DOM */
-    
+
     newRow.innerHTML = `    
     <td class="status icon ${ status }">${ label }</td>
     <td class="site"><a href="${ protocol + name }">${ protocol + name }</a><br><a href="${ altProtocol + name }"><i>${ altProtocol + name }</i></a></td>
@@ -284,7 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     newRow.setAttribute('class', (status === 'good') ? 'good' : 'error');
 
     // add the newly created element and its content into the DOM 
-    ntestresults.appendChild(newRow); 
+    ntestresults.appendChild(newRow);
   }
 
   function message(text, opts) {
@@ -293,43 +303,46 @@ document.addEventListener('DOMContentLoaded', () => {
       delay: 1000
     };
 
-    opts = {...defaultOpts, ...opts};
+    opts = { 
+      ...defaultOpts,
+      ...opts
+    };
 
     console.log(text);
-    setTimeout(function() {
+    setTimeout(function () {
       nStatustext.textContent = text;
       nStatustext.className = opts.class;
-    }, opts.delay);  
+    }, opts.delay);
   }
 
   JSON.isValid = (jsonObj) => {
-      debugger;
-      try {
-          JSON.parse( jsonObj );
-          
-          console.log( "jsonObj parsed correctly" );
-          return true;
-      } catch (error) {
-          console.log( "jsonObj not parsed correctly - not a valid JSON format" );
-          return false;
-      }
+    debugger;
+    try {
+      JSON.parse(jsonObj);
+
+      console.log("jsonObj parsed correctly");
+      return true;
+    } catch (error) {
+      console.log("jsonObj not parsed correctly - not a valid JSON format");
+      return false;
+    }
   }
-  
+
   JSON.isValidStringified = (jsonObj) => {
-      try {
-          let stringified = JSON.stringify( jsonObj );
-  
-          JSON.parse( stringified );
-          
-          console.log( "stringified parsed correctly" );
-          return true;
-      } catch (error) {
-          console.log( "stringified not parsed correctly - not a valid JSON format" );
-  
-          console.log("Sorry, can't process")
-          return false;
-      }
+    try {
+      let stringified = JSON.stringify(jsonObj);
+
+      JSON.parse(stringified);
+
+      console.log("stringified parsed correctly");
+      return true;
+    } catch (error) {
+      console.log("stringified not parsed correctly - not a valid JSON format");
+
+      console.log("Sorry, can't process")
+      return false;
+    }
   }
-  
+
 
 }); // end document.addEventListener

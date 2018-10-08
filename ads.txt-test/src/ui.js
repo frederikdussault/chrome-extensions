@@ -1,3 +1,5 @@
+/*eslint no-unused-vars: 0*/
+/*global sites siteMetas ui*/
 /**
  * UI.js
  */
@@ -34,7 +36,7 @@ var ui = {
     //debugger;
     console.log("AdTechWatch: Starting site watch");
 
-    reset();
+    this.reset();
 
     // will fire processDone event
     cbProcess();
@@ -48,13 +50,13 @@ var ui = {
   },
 
   reset: function () {
-    while (ntestresults.firstChild) ntestresults.removeChild(ntestresults.firstChild);
+    while (ntestresults.firstChild) ntestresults.removeChild(ntestresults.firstChild); // TODO REVISE: ntestresults is global
   },
 
   cbAddUiElement: function (name, redirectedTo, data) {
     let newRow = document.createElement("tr"),
       status = (data.includes('ERROR:')) ? 'error' : '',
-      version = nVersiontext.value,
+      version = nVersiontext.value,  // TODO REVISE: nVersiontext is global
       label = '';
 
 
@@ -85,7 +87,7 @@ var ui = {
     newRow.setAttribute('class', (status === 'good') ? 'good' : 'error');
 
     // add the newly created element and its content into the DOM 
-    ntestresults.appendChild(newRow);
+    ntestresults.appendChild(newRow);  // TODO REVISE: ntestresults is global
   },
 
   message: function (text, opts) {
@@ -101,7 +103,7 @@ var ui = {
 
     console.log(text);
     setTimeout(function () {
-      nStatustext.textContent = text;
+      nStatustext.textContent = text;  // TODO REVISE: nStatustext is global
       nStatustext.className = opts.class;
     }, opts.delay);
   },

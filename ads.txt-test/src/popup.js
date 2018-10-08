@@ -1,4 +1,5 @@
-/* global siteMetas:false ui:false */
+/*eslint no-unused-vars: 0*/
+/*global sites siteMetas ui*/
 
 // This extension inject a script in the current tab. Script from which we will fetch information from the DOM.
 // The user can select from the testrules which information he wants for the
@@ -8,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Popup action functions */
 
   JSON.isValid = (jsonObj) => {
-      debugger;
       try {
           JSON.parse( jsonObj );
           
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log( "jsonObj not parsed correctly - not a valid JSON format" );
           return false;
       }
-  }
+  };
  
   JSON.isValidStringified = (jsonObj) => {
       try {
@@ -31,10 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (error) {
           console.log( "stringified not parsed correctly - not a valid JSON format" );
   
-          console.log("Sorry, can't process")
+          console.log("Sorry, can't process");
           return false;
       }
-  }
+  };
   
   const currentVersion = 'v3.8';
    
@@ -46,8 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
         nShowErrorsbtn = document.querySelector('#btnShowErrors'),
         nShowGoodbtn = document.querySelector('#btnShowGood'),
         nShowAllbtn = document.querySelector('#btnShowAll'),
-        ntestresults = document.querySelector('#testresults'),
-        nStatustext = document.querySelector('#statustext'),
+        ntestresults = document.querySelector('#testresults'),  // TODO 
+        nStatustext = document.querySelector('#statustext'),    // TODO 
         nVersiontext = document.querySelector('#versiontext');
   
   nVersiontext.value = currentVersion;
