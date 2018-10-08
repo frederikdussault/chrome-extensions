@@ -24,6 +24,7 @@ module.exports = function (grunt) {
                 '!dist/**/*.*',
                 '!node_modules/**/*.*',
                 '!ext-packages/**/*.*',
+                '!.donotuse/**/*.*',
             ]
         },
         concat: {
@@ -50,7 +51,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 files: {
-                    'dist/main.css': 'src/main.scss'
+                    'dist/main.css': 'src/styles/main.scss'
                 }
             }
         },
@@ -58,8 +59,7 @@ module.exports = function (grunt) {
         copy: {
             html: {
                 expand: true,
-                cwd: 'src/',
-                src: ['*.html, *.png, manifest.json'],
+                src: ['src/*'],
                 dest: 'dist/',
                 flatten: true,
                 filter: 'isFile',
@@ -71,7 +71,7 @@ module.exports = function (grunt) {
                 tasks: ['newer:eslint', 'concat', 'copy']
             },
             styles: {
-                files: ['src/*.scss'],
+                files: ['src/styles/*.scss'],
                 tasks: ['sass']
             }
         }
