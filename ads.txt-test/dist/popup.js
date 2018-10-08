@@ -1,3 +1,9 @@
+/*! ads.txt-watch-tool - v1.0.2 - 2018-10-08 */
+
+/* ====================================
+ * Source: src/data/sites.js
+ * ==================================== */
+
 var sites = [
     'zzz.notgood.zzz', 
     'www.educatall.com', 
@@ -84,9 +90,14 @@ var sites = [
     ];
     
 
-/*==============*/
 
-/* eslint  */
+/* ====================================
+ * Source: src/classes/sitemetas.js
+ * ==================================== */
+
+/*eslint no-unused-vars: 0*/
+/*global sites siteMetas ui*/
+
 
 /* 
 siteMetas element structure
@@ -338,11 +349,14 @@ siteMetas.listall(console.log);
 
 siteMetas.processAll();
 
-/*==============*/
 
-/**
- * UI.js
- */
+/* ====================================
+ * Source: src/classes/ui.js
+ * ==================================== */
+
+/*eslint no-unused-vars: 0*/
+/*global sites siteMetas ui*/
+
 var ui = {
   rowsSelector: '',
   init: function (options) {
@@ -453,9 +467,47 @@ var ui = {
 
 };
 
-/*==============*/
 
-/* global siteMetas:false ui:false */
+/* ====================================
+ * Source: src/classes/utils.js
+ * ==================================== */
+
+JSON.isValid = (jsonObj) => {
+    try {
+        JSON.parse( jsonObj );
+        
+        console.log( "jsonObj parsed correctly" );
+        return true;
+    } catch (error) {
+        console.log( "jsonObj not parsed correctly - not a valid JSON format" );
+        return false;
+    }
+};
+
+JSON.isValidStringified = (jsonObj) => {
+    try {
+        let stringified = JSON.stringify( jsonObj );
+
+        JSON.parse( stringified );
+        
+        console.log( "stringified parsed correctly" );
+        return true;
+    } catch (error) {
+        console.log( "stringified not parsed correctly - not a valid JSON format" );
+
+        console.log("Sorry, can't process");
+        return false;
+    }
+};
+
+
+
+/* ====================================
+ * Source: src/popup.js
+ * ==================================== */
+
+/*eslint no-unused-vars: 0*/
+/*global sites siteMetas ui*/
 
 // This extension inject a script in the current tab. Script from which we will fetch information from the DOM.
 // The user can select from the testrules which information he wants for the
@@ -464,34 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Popup action functions */
 
-  JSON.isValid = (jsonObj) => {
-      try {
-          JSON.parse( jsonObj );
-          
-          console.log( "jsonObj parsed correctly" );
-          return true;
-      } catch (error) {
-          console.log( "jsonObj not parsed correctly - not a valid JSON format" );
-          return false;
-      }
-  };
- 
-  JSON.isValidStringified = (jsonObj) => {
-      try {
-          let stringified = JSON.stringify( jsonObj );
-  
-          JSON.parse( stringified );
-          
-          console.log( "stringified parsed correctly" );
-          return true;
-      } catch (error) {
-          console.log( "stringified not parsed correctly - not a valid JSON format" );
-  
-          console.log("Sorry, can't process");
-          return false;
-      }
-  };
-  
+    
   const currentVersion = 'v3.8';
    
   // sitemetas.js - keep stats of all sites

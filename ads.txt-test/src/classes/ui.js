@@ -1,8 +1,6 @@
 /*eslint no-unused-vars: 0*/
 /*global sites siteMetas ui*/
-/**
- * UI.js
- */
+
 var ui = {
   rowsSelector: '',
   init: function (options) {

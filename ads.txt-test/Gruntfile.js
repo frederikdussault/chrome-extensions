@@ -5,6 +5,7 @@
  */
 module.exports = function (grunt) {
 
+    const sass = require('node-sass');
     require('load-grunt-tasks')(grunt); // npm install --save-dev load-grunt-tasks
 
     grunt.initConfig({
@@ -19,26 +20,39 @@ module.exports = function (grunt) {
                 'package.json',
                 'Gruntfile.js',
                 'src/**/*.js*',
-                '!src/**/~~*.js*'
+                '!src/**/~~*.js*',
+                '!dist/**/*.*',
+                '!node_modules/**/*.*',
+                '!ext-packages/**/*.*',
             ]
         },
         concat: {
             options: {
-                separator: '\n\n/*==============*/\n\n',
+                banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + 
+                        '<%= grunt.template.today("yyyy-mm-dd") %> */',
+                process: function(src, filepath) {
+                    return  '\n\n/* ====================================\n' + 
+                            ' * Source: ' + filepath + '\n' +
+                            ' * ==================================== */\n\n' + 
+                            src;
+                    },
             },
             scripts: {
-                src: ['src/data/*.js', 'src/sitemetas.js', 'src/ui.js', 'src/popup.js'],
+                src: ['src/data/*.js', 'src/classes/*.js', 'src/popup.js'],
                 dest: 'dist/popup.js',
             },
             styles: {},
         },
         sass: {
             options: {
+                implementation: sass,
                 sourceMap: true
             },
-            files: {
-                'dist/style.css': 'src/style.scss'
-            } // does not find that
+            dist: {
+                files: {
+                    'dist/main.css': 'src/main.scss'
+                }
+            }
         },
         // copy but does not clean files (remove obsolete)
         copy: {
