@@ -22,7 +22,7 @@ QUnit.module("utils.js", function (hooks) {
         };
 
         assert.ok(
-            await fileExists("tests.html-asdf"),
+            await fileExists("tests.html"),
             "file exists");
     });
 /* 
