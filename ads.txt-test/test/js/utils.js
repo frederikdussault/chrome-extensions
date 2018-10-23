@@ -12,7 +12,7 @@ QUnit.module("utils.js", function (hooks) {
 
     QUnit.test("jQuery test get",  (assert) => {
         function fileExists(url, done, expected) {
-            var success = false;
+             var success = false;
 
             jQuery.get(url)
             .done(function() {

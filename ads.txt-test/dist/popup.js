@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const currentVersion = 'v3.8';
    
   // sitemetas.js - keep stats of all sites
-  siteMetas.init();
+  // siteMetas.init();
+  siteMetas.init(sites); //from data/sites.js
   ui.init({rowSelector:'#testresults tr'});
 
   const nTestbtn = document.querySelector('#btnGoTest'),
@@ -30,5 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
   nShowGoodbtn.addEventListener('click', () => ui.hideRows('error'));
   nShowAllbtn.addEventListener('click', () => ui.showAll());
 
+  siteMetas.listall(console.log);
+  siteMetas.processAll();
 
 }); // end document.addEventListener

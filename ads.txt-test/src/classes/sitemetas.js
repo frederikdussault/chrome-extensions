@@ -145,7 +145,7 @@ var siteMetas = {
 
           debugger;
 
-          //TODO what happen is not ok?  Does it fall here?
+          //TODO what happen if not ok?  Does it fall here?
           //TODO does reject fall here? 
 
           console.log("AdTechWatch fetchsite: error caught")
@@ -247,7 +247,6 @@ var siteMetas = {
   },
 };
 
-siteMetas.init(sites); //from data/sites.js
-siteMetas.listall(console.log);
-
-siteMetas.processAll();
+// siteMetas.init(sites); //from data/sites.js
+// siteMetas.listall(console.log);
+// siteMetas.processAll();
