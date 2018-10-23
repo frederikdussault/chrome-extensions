@@ -4,26 +4,30 @@ QUnit.module("utils.js", function (hooks) {
         ///this.robot = new Robot();
     });
 
+    // Use jQuery for test purpose
+
     QUnit.test("jQuery dependance", assert => {
         assert.ok(jQuery, "jQuery is there");
     });
 
-    QUnit.test("jQuery test get",  async (assert) => {
-        async function fileExists(url) {
-            jQuery.get(url, null)
+    QUnit.test("jQuery test get",  (assert) => {
+        function fileExists(url, done, expected) {
+            var success = false;
+
+            jQuery.get(url)
             .done(function() {
-                alert( "second success" );
-                return true;
+                success = true;
             })
-            .fail(function() {
-                alert( "error" );
-                return false;
-            })
+            .always(function() {
+                debugger;
+                assert.equal( success, expected, "test resumed from async operation 1" );
+                done();
+            });
         };
 
-        assert.ok(
-            await fileExists("tests.html"),
-            "file exists");
+        assert.expect( 1 );
+        fileExists("tests.html", assert.async(), true);
+        //fileExists("tests.html-asdf", assert.async(), false);
     });
 /* 
  */
