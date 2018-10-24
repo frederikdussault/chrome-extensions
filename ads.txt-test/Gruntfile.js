@@ -10,6 +10,15 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        vars: {
+            build: [
+                'src/**/*.js*',
+                '!src/**/~~*.js*',
+            ],
+            test: [
+                'test/classes/*.js*',
+            ],
+        },
         newer: {
             options: {
                 tolerance: 1000
@@ -19,8 +28,8 @@ module.exports = function (grunt) {
             target: [
                 'package.json',
                 'Gruntfile.js',
-                'src/**/*.js*',
-                '!src/**/~~*.js*',
+                '<%= vars.build %>',
+                '<%= vars.test %>',
                 '!dist/**/*.*',
                 '!node_modules/**/*.*',
                 '!ext-packages/**/*.*',
@@ -42,16 +51,30 @@ module.exports = function (grunt) {
                 src: ['src/data/*.js', 'src/classes/*.js', 'src/popup.js'],
                 dest: 'dist/popup.js',
             },
+            scripts_test_suite: {
+                src: ['test/js/classes/utils.js', 'test/js/classes/data.js', 'test/js/classes/sitemetas.js', 'test/js/classes/ui.js', 'test/js/classes/popup.js',],
+                dest: 'test/suite.js',
+            },
+            scripts_test_js: {
+                src: ['src/data/*.js', 'src/classes/*.js',],
+                dest: 'test/classes.js',
+            },
             styles: {},
+            styles_test: {},
         },
         sass: {
             options: {
                 implementation: sass,
                 sourceMap: true
             },
-            dist: {
+            build: {
                 files: {
-                    'dist/main.css': 'src/styles/main.scss'
+                    'dist/main.css': 'src/styles/main.scss',
+                }
+            },
+            test: {
+                files: {
+                    'test/css/test.css': 'test/css/test.scss',
                 }
             }
         },
@@ -73,7 +96,11 @@ module.exports = function (grunt) {
             styles: {
                 files: ['src/styles/*.scss'],
                 tasks: ['sass']
-            }
+            },
+            styles_test: {
+                files: ['test/css/*.scss'],
+                tasks: ['sass']
+            },
         }
     });
 
@@ -84,7 +111,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('build', [
-        'newer:eslint', 'concat', 'sass', 'copy'
+        'newer:eslint', 'concat:scripts', 'sass:build', 'copy'
+    ]);
+    grunt.registerTask('test', [
+        'build', 'concat:scripts_test', 'sass:test', 'watch'
     ]);
     grunt.registerTask('default', ['build', 'watch']);
 };
