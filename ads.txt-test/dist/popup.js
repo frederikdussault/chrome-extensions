@@ -1,4 +1,4 @@
-/*! ads.txt-watch-tool - v1.0.2 - 2018-11-02 */
+/*! ads.txt-watch-tool - v1.0.2 - 2018-11-03 */
 
 /* ====================================
  * Source: src/data/sites.js
@@ -231,6 +231,8 @@ var siteMetas = {
       var res = this.deft; // assign default values
       console.log(`AdTechWatch siteMetas process: ${file} `);
 
+      //TODO see ads.txt-test\ext-packages\1.2.4\popup.js::fetchSite()  That works.
+
       fetch(file, {
           mode: "no-cors",
           cache: "no-cache",
@@ -435,6 +437,9 @@ var ui = {
   }, /// reset
 
   cbAddUiElement: function (name, redirectedTo, data) {
+
+    //TODO Revise data: new structure is domain.protocol...
+
     let newRow = document.createElement("tr"),
       status = (data.includes('ERROR:')) ? 'error' : '',
       version = this.nVersiontext.value,  // TODO REVISE: make sure this.points to ui
@@ -459,9 +464,15 @@ var ui = {
 
     /* insertion in DOM */
 
+    //TODO Revise data: new structure is domain.protocol... 
+    //TODO Will need a loop
+    //TODO there is no more altprotocol
     newRow.innerHTML = `    
         <td class="status icon ${ status }">${ label }</td>
-        <td class="site"><a href="${ protocol + name }">${ protocol + name }</a><br><a href="${ altProtocol + name }"><i>${ altProtocol + name }</i></a></td>
+        <td class="site">
+          <a href="${ protocol + name }">${ protocol + name }</a><br>
+          <a href="${ altProtocol + name }"><i>${ altProtocol + name }</i></a>
+        </td>
         <td class="result ${ status }">${ data }</td>
       `;
 

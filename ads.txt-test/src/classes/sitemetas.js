@@ -134,6 +134,8 @@ var siteMetas = {
       var res = this.deft; // assign default values
       console.log(`AdTechWatch siteMetas process: ${file} `);
 
+      //TODO see ads.txt-test\ext-packages\1.2.4\popup.js::fetchSite()  That works.
+
       fetch(file, {
           mode: "no-cors",
           cache: "no-cache",
