@@ -48,15 +48,15 @@ module.exports = function (grunt) {
                     },
             },
             scripts: {
-                src: ['src/data/*.js', 'src/classes/*.js', 'src/popup.js'],
+                src: ['src/data/*', 'src/classes/*', 'src/popup.js'],
                 dest: 'dist/popup.js',
             },
             scripts_test_suite: {
-                src: ['test/js/classes/utils.js', 'test/js/classes/data.js', 'test/js/classes/sitemetas.js', 'test/js/classes/ui.js', 'test/js/classes/popup.js',],
+                src: ['test/js/classes/utils.js', 'test/js/classes/data.js', 'test/js/classes/sitemetas.js', 'test/js/classes/ui.js', 'test/js/classes/popup.js'],
                 dest: 'test/suite.js',
             },
             scripts_test_js: {
-                src: ['src/data/*.js', 'src/classes/*.js',],
+                src: ['src/data/*.js', 'src/classes/*.js'],
                 dest: 'test/classes.js',
             },
             styles: {},
@@ -82,7 +82,7 @@ module.exports = function (grunt) {
         copy: {
             html: {
                 expand: true,
-                src: ['src/*'],
+                src: ['src/*', '!src/popup.js'],
                 dest: 'dist/',
                 flatten: true,
                 filter: 'isFile',
@@ -90,7 +90,7 @@ module.exports = function (grunt) {
         },
         watch: {
             scripts: {
-                files: ['<%= eslint.target %>'],
+                files: ['<%= eslint.target %>', 'src/*'],
                 tasks: ['newer:eslint', 'concat', 'copy']
             },
             styles: {

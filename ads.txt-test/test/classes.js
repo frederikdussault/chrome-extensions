@@ -1,4 +1,4 @@
-/*! ads.txt-watch-tool - v1.0.2 - 2018-10-24 */
+/*! ads.txt-watch-tool - v1.0.2 - 2018-11-02 */
 
 /* ====================================
  * Source: src/data/sites.js
@@ -179,51 +179,53 @@ var siteMetas = {
   process: function (domain) {
     console.log(`AdTechWatch siteMetas process: ${domain} `);
 
+    // callback getMeta
+    function getMeta(response, domain, protocol) {
+      // forEach loop context variables: file, domain, protocol
+
+      debugger;
+
+      const file = protocol + domain + '/ads.txt';
+
+      console.log(`AdTechWatch siteMetas process fetch getMeta: `);
+      console.log(file);
+      console.table(response);
+
+      // keep stats of all sites
+      siteMetas.add(domain, protocol, {
+        headers: response.headers,
+        ok: response.ok,
+        redirected: response.redirected,
+        status: response.status,
+        statusText: response.statusText,
+        type: response.type,
+        url: response.url,
+        filepath: file,
+      });
+
+      return response;
+    } //callback getMeta
+
+    // callback handleStatus
+    function handleStatus(fileContent, res) {
+      console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
+      console.table(res);
+
+      debugger;
+
+      if (res.ok) { // [200 .. 299]
+        res.content = fileContent.split('\n')[0];
+        res.pass = true;
+      } else if (res.redirected) {
+        //TODO see if filecontent is passed when redirected
+        let content = (fileContent) ? fileContent.split('\n')[0] : '';
+        res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
+      } else {
+        res.content = `ERROR: ${res.status} ${res.statusText}`;
+      }
+    } //callback handleStatus
+
     this.protocols.forEach((protocol) => {
-
-      // callback getMeta
-      function getMeta(response) {
-        // forEach loop context variables: file, domain, protocol
-
-        debugger;
-
-        console.log(`AdTechWatch siteMetas process fetch getMeta: `);
-        console.log(file);
-        console.table(response);
-
-        // keep stats of all sites
-        siteMetas.add(domain, protocol, {
-          headers: response.headers,
-          ok: response.ok,
-          redirected: response.redirected,
-          status: response.status,
-          statusText: response.statusText,
-          type: response.type,
-          url: response.url,
-          filepath: file,
-        });
-
-        return response;
-      } //callback getMeta
-
-      // callback handleStatus
-      function handleStatus(fileContent, res) {
-        console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
-        console.table(res);
-
-        debugger;
-
-        if (res.ok) { // [200 .. 299]
-          res.content = fileContent.split('\n')[0];
-          res.pass = true;
-        } else if (res.redirected) {
-          //TODO see if filecontent is passed when redirected
-          let content = (fileContent) ? fileContent.split('\n')[0] : '';
-          res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
-        } else {
-          res.content = `ERROR: ${res.status} ${res.statusText}`;
-        }
-      } //callback handleStatus
 
       let file = protocol + domain + '/ads.txt';
       var res = this.deft; // assign default values
@@ -235,7 +237,7 @@ var siteMetas = {
           redirect: "follow",
           //referrer: "no-referrer"
         })
-        .then(response => getMeta(response))
+        .then(response => getMeta(response, domain, protocol))
         .then(response => response.text())
         .then(fileContent => handleStatus(fileContent, this.sites[domain][protocol].results))
         .catch((error) => {
@@ -358,9 +360,34 @@ var siteMetas = {
 
 var ui = {
   rowsSelector: '',
-  init: function (options) {
-    this.rowsSelector = options.rowsSelector;
-  },
+  ntestresults: '',
+  nTestbtn: '',
+  nShowErrorsbtn: '',
+  nShowGoodbtn: '',
+  nShowAllbtn: '',
+  ntestresults: '',
+  nStatustext: '',
+  nVersiontext: '',
+
+  init: function (currentVersion, options) {
+    this.rowsSelector = options.rowSelector;
+
+    this.nVersiontext   = document.querySelector(options.versiontextSelector);
+    this.nTestbtn       = document.querySelector(options.testbtnSelector);
+    this.nShowErrorsbtn = document.querySelector(options.showErrorsbtnSelector);
+    this.nShowGoodbtn   = document.querySelector(options.showErrorsbtnSelector);
+    this.nShowAllbtn    = document.querySelector(options.showAllbtnSelector);
+    this.ntestresults   = document.querySelector(options.testresultsSelector);  // TODO 
+    this.nStatustext    = document.querySelector(options.statustextSelector);   // TODO 
+
+    this.nVersiontext.value = currentVersion;
+
+    // TODO see if this points to ui, if not use self
+    this.nTestbtn.addEventListener('click', () => this.test(siteMetas.processAll));
+    this.nShowErrorsbtn.addEventListener('click', () => this.hideRows('good'));
+    this.nShowGoodbtn.addEventListener('click',   () => this.hideRows('error'));
+    this.nShowAllbtn.addEventListener('click',    () => this.showAll());
+  }, /// init
 
   hideRows: function (type) {
     let rows = document.querySelectorAll(this.rowsSelector);
@@ -373,7 +400,7 @@ var ui = {
         row.classList.remove('hidden');
       }
     }
-  },
+  }, /// hideRows
 
   showAll: function () {
     let rows = document.querySelectorAll('tr.hidden');
@@ -381,7 +408,7 @@ var ui = {
     for (const row of rows) {
       row.classList.remove('hidden');
     }
-  },
+  }, /// showAll
 
   // Validates test rules - must be well formated json
   test: function (cbProcess) {
@@ -400,16 +427,17 @@ var ui = {
           fetchSite(site, cbAddUiElement);
         });
      */
-  },
+  }, /// test
 
   reset: function () {
-    while (ntestresults.firstChild) ntestresults.removeChild(ntestresults.firstChild); // TODO REVISE: ntestresults is global
-  },
+    while (this.ntestresults.firstChild) 
+      this.ntestresults.removeChild(this.ntestresults.firstChild); // TODO REVISE: make sure this.points to ui
+  }, /// reset
 
   cbAddUiElement: function (name, redirectedTo, data) {
     let newRow = document.createElement("tr"),
       status = (data.includes('ERROR:')) ? 'error' : '',
-      version = nVersiontext.value,  // TODO REVISE: nVersiontext is global
+      version = this.nVersiontext.value,  // TODO REVISE: make sure this.points to ui
       label = '';
 
 
@@ -440,8 +468,8 @@ var ui = {
     newRow.setAttribute('class', (status === 'good') ? 'good' : 'error');
 
     // add the newly created element and its content into the DOM 
-    ntestresults.appendChild(newRow);  // TODO REVISE: ntestresults is global
-  },
+    this.ntestresults.appendChild(newRow);  // TODO REVISE: ntestresults is global
+  }, /// cbAddUiElement
 
   message: function (text, opts) {
     const defaultOpts = {
@@ -456,15 +484,12 @@ var ui = {
 
     console.log(text);
     setTimeout(function () {
-      nStatustext.textContent = text;  // TODO REVISE: nStatustext is global
-      nStatustext.className = opts.class;
+      this.nStatustext.textContent = text;  // TODO REVISE: make sure this points to ui
+      this.nStatustext.className = opts.class;
     }, opts.delay);
-  },
+  }, /// message
 
-
-
-
-};
+}; /// ui.js
 
 
 /* ====================================

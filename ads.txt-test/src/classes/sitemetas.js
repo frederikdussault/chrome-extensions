@@ -82,51 +82,53 @@ var siteMetas = {
   process: function (domain) {
     console.log(`AdTechWatch siteMetas process: ${domain} `);
 
+    // callback getMeta
+    function getMeta(response, domain, protocol) {
+      // forEach loop context variables: file, domain, protocol
+
+      debugger;
+
+      const file = protocol + domain + '/ads.txt';
+
+      console.log(`AdTechWatch siteMetas process fetch getMeta: `);
+      console.log(file);
+      console.table(response);
+
+      // keep stats of all sites
+      siteMetas.add(domain, protocol, {
+        headers: response.headers,
+        ok: response.ok,
+        redirected: response.redirected,
+        status: response.status,
+        statusText: response.statusText,
+        type: response.type,
+        url: response.url,
+        filepath: file,
+      });
+
+      return response;
+    } //callback getMeta
+
+    // callback handleStatus
+    function handleStatus(fileContent, res) {
+      console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
+      console.table(res);
+
+      debugger;
+
+      if (res.ok) { // [200 .. 299]
+        res.content = fileContent.split('\n')[0];
+        res.pass = true;
+      } else if (res.redirected) {
+        //TODO see if filecontent is passed when redirected
+        let content = (fileContent) ? fileContent.split('\n')[0] : '';
+        res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
+      } else {
+        res.content = `ERROR: ${res.status} ${res.statusText}`;
+      }
+    } //callback handleStatus
+
     this.protocols.forEach((protocol) => {
-
-      // callback getMeta
-      function getMeta(response) {
-        // forEach loop context variables: file, domain, protocol
-
-        debugger;
-
-        console.log(`AdTechWatch siteMetas process fetch getMeta: `);
-        console.log(file);
-        console.table(response);
-
-        // keep stats of all sites
-        siteMetas.add(domain, protocol, {
-          headers: response.headers,
-          ok: response.ok,
-          redirected: response.redirected,
-          status: response.status,
-          statusText: response.statusText,
-          type: response.type,
-          url: response.url,
-          filepath: file,
-        });
-
-        return response;
-      } //callback getMeta
-
-      // callback handleStatus
-      function handleStatus(fileContent, res) {
-        console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
-        console.table(res);
-
-        debugger;
-
-        if (res.ok) { // [200 .. 299]
-          res.content = fileContent.split('\n')[0];
-          res.pass = true;
-        } else if (res.redirected) {
-          //TODO see if filecontent is passed when redirected
-          let content = (fileContent) ? fileContent.split('\n')[0] : '';
-          res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
-        } else {
-          res.content = `ERROR: ${res.status} ${res.statusText}`;
-        }
-      } //callback handleStatus
 
       let file = protocol + domain + '/ads.txt';
       var res = this.deft; // assign default values
@@ -138,7 +140,7 @@ var siteMetas = {
           redirect: "follow",
           //referrer: "no-referrer"
         })
-        .then(response => getMeta(response))
+        .then(response => getMeta(response, domain, protocol))
         .then(response => response.text())
         .then(fileContent => handleStatus(fileContent, this.sites[domain][protocol].results))
         .catch((error) => {

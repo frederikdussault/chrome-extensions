@@ -12,6 +12,16 @@ body {
   margin: 0;
   padding: 0; }
 
+header {
+  margin: 0;
+  padding: 1rem 0; }
+  header h1 {
+    margin: 0 0 10px; }
+  header .version {
+    margin: 0;
+    font-size: 11px;
+    color: #767676; }
+
 .container {
   margin: 10px 0px; }
 

@@ -1,4 +1,4 @@
-/*! ads.txt-watch-tool - v1.0.2 - 2018-10-24 */
+/*! ads.txt-watch-tool - v1.0.2 - 2018-11-02 */
 
 /* ====================================
  * Source: test/js/classes/utils.js
@@ -68,11 +68,14 @@ QUnit.module.todo( "sitemeta.js", function( hooks ) {
       ///this.robot = new Robot();
     } );
 
-    let sites = [
-      'zzz.notgood.zzz', 
-      'www.educatall.com', 
-      'www.1019rock.ca', 
-      'www.1053rock.ca'
+    let shortList = [
+      'zzz.notgood.zzz',    // invalide URL, dite does not exist
+      'www.educatall.com',  // site exists but does not have an ads.txt
+      'www.kiss959.com',     // redirects to www.959chfm.com
+      'www.tsisports.ca',   // site exists, file not okay,
+      'www.1019rock.ca',    // site exists, file okay
+      'www.1310news.com',
+      'www.570news.com'
     ];
 
     QUnit.test("Test sitemeta.js", assert => {

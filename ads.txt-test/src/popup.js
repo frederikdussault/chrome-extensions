@@ -7,29 +7,24 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* Popup action functions */
+  const extensionVersion = '1.4.1';
+  document.querySelector("#extVersion").innerHTML = extensionVersion;
 
-    
-  const currentVersion = 'v3.8';
+  const currentAdstxtVersion = 'v4.1';    
    
   // sitemetas.js - keep stats of all sites
   // siteMetas.init();
   siteMetas.init(sites); //from data/sites.js
-  ui.init({rowSelector:'#testresults tr'});
-
-  const nTestbtn = document.querySelector('#btnGoTest'),
-        nShowErrorsbtn = document.querySelector('#btnShowErrors'),
-        nShowGoodbtn = document.querySelector('#btnShowGood'),
-        nShowAllbtn = document.querySelector('#btnShowAll'),
-        ntestresults = document.querySelector('#testresults'),  // TODO 
-        nStatustext = document.querySelector('#statustext'),    // TODO 
-        nVersiontext = document.querySelector('#versiontext');
-  
-  nVersiontext.value = currentVersion;
-
-  nTestbtn.addEventListener('click', () => ui.test(siteMetas.processAll));
-  nShowErrorsbtn.addEventListener('click', () => ui.hideRows('good'));
-  nShowGoodbtn.addEventListener('click', () => ui.hideRows('error'));
-  nShowAllbtn.addEventListener('click', () => ui.showAll());
+  ui.init(currentAdstxtVersion, {
+    rowSelector:'#testresults tr', 
+    testbtnSelector:'#btnGoTest',
+    versiontextSelector:'#versiontext',
+    testresultsSelector:'#testresults',
+    statustextSelector:'#statustext',
+    showErrorsbtnSelector:'#btnShowErrors',
+    showErrorsbtnSelector:'#btnShowGood',
+    showAllbtnSelector:'#btnShowAll',
+  });
 
   siteMetas.listall(console.log);
   siteMetas.processAll();

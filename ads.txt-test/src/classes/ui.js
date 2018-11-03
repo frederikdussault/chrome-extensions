@@ -3,9 +3,34 @@
 
 var ui = {
   rowsSelector: '',
-  init: function (options) {
-    this.rowsSelector = options.rowsSelector;
-  },
+  ntestresults: '',
+  nTestbtn: '',
+  nShowErrorsbtn: '',
+  nShowGoodbtn: '',
+  nShowAllbtn: '',
+  ntestresults: '',
+  nStatustext: '',
+  nVersiontext: '',
+
+  init: function (currentVersion, options) {
+    this.rowsSelector = options.rowSelector;
+
+    this.nVersiontext   = document.querySelector(options.versiontextSelector);
+    this.nTestbtn       = document.querySelector(options.testbtnSelector);
+    this.nShowErrorsbtn = document.querySelector(options.showErrorsbtnSelector);
+    this.nShowGoodbtn   = document.querySelector(options.showErrorsbtnSelector);
+    this.nShowAllbtn    = document.querySelector(options.showAllbtnSelector);
+    this.ntestresults   = document.querySelector(options.testresultsSelector);  // TODO 
+    this.nStatustext    = document.querySelector(options.statustextSelector);   // TODO 
+
+    this.nVersiontext.value = currentVersion;
+
+    // TODO see if this points to ui, if not use self
+    this.nTestbtn.addEventListener('click', () => this.test(siteMetas.processAll));
+    this.nShowErrorsbtn.addEventListener('click', () => this.hideRows('good'));
+    this.nShowGoodbtn.addEventListener('click',   () => this.hideRows('error'));
+    this.nShowAllbtn.addEventListener('click',    () => this.showAll());
+  }, /// init
 
   hideRows: function (type) {
     let rows = document.querySelectorAll(this.rowsSelector);
@@ -18,7 +43,7 @@ var ui = {
         row.classList.remove('hidden');
       }
     }
-  },
+  }, /// hideRows
 
   showAll: function () {
     let rows = document.querySelectorAll('tr.hidden');
@@ -26,7 +51,7 @@ var ui = {
     for (const row of rows) {
       row.classList.remove('hidden');
     }
-  },
+  }, /// showAll
 
   // Validates test rules - must be well formated json
   test: function (cbProcess) {
@@ -45,16 +70,17 @@ var ui = {
           fetchSite(site, cbAddUiElement);
         });
      */
-  },
+  }, /// test
 
   reset: function () {
-    while (ntestresults.firstChild) ntestresults.removeChild(ntestresults.firstChild); // TODO REVISE: ntestresults is global
-  },
+    while (this.ntestresults.firstChild) 
+      this.ntestresults.removeChild(this.ntestresults.firstChild); // TODO REVISE: make sure this.points to ui
+  }, /// reset
 
   cbAddUiElement: function (name, redirectedTo, data) {
     let newRow = document.createElement("tr"),
       status = (data.includes('ERROR:')) ? 'error' : '',
-      version = nVersiontext.value,  // TODO REVISE: nVersiontext is global
+      version = this.nVersiontext.value,  // TODO REVISE: make sure this.points to ui
       label = '';
 
 
@@ -85,8 +111,8 @@ var ui = {
     newRow.setAttribute('class', (status === 'good') ? 'good' : 'error');
 
     // add the newly created element and its content into the DOM 
-    ntestresults.appendChild(newRow);  // TODO REVISE: ntestresults is global
-  },
+    this.ntestresults.appendChild(newRow);  // TODO REVISE: ntestresults is global
+  }, /// cbAddUiElement
 
   message: function (text, opts) {
     const defaultOpts = {
@@ -101,12 +127,9 @@ var ui = {
 
     console.log(text);
     setTimeout(function () {
-      nStatustext.textContent = text;  // TODO REVISE: nStatustext is global
-      nStatustext.className = opts.class;
+      this.nStatustext.textContent = text;  // TODO REVISE: make sure this points to ui
+      this.nStatustext.className = opts.class;
     }, opts.delay);
-  },
+  }, /// message
 
-
-
-
-};
+}; /// ui.js
