@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Popup action functions */
 
-  const nTestbtn = document.querySelector('#btnGoTest'),
+  const currentVersion = 'v4.1',
+        nTestbtn = document.querySelector('#btnGoTest'),
         nShowErrorsbtn = document.querySelector('#btnShowErrors'),
         nShowGoodbtn = document.querySelector('#btnShowGood'),
         nShowAllbtn = document.querySelector('#btnShowAll'),
@@ -13,8 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nStatustext = document.querySelector('#statustext'),
         nVersiontext = document.querySelector('#versiontext'),
         protocol = 'http://',
-        altProtocol = 'https://',
-        currentVersion = 'v4.1';
+        altProtocol = 'https://';
   
   nVersiontext.value = currentVersion;
   nTestbtn.addEventListener( 'click', () => test() );
