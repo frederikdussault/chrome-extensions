@@ -76,97 +76,57 @@ var siteMetas = {
   },
 
   /**
-   * Fetch a single sites -- from 1.2.4
-   */
-  fetchSite: function (site, callback) {
-    let file = site + '/ads.txt',
-        res = {};  // gather information in case it errors out - for catch.
-    console.log(file);
-
-    const myRequest = new Request(file, {"cache":"no-cache", "redirect":"follow"});
-
-    // get file content and add results to result table
-    fetch(myRequest)
-      .then(response => {
-        console.table(response);
-
-        res = response;
-        const responseText = response.text();
-
-        if (response.status === 200) {
-          return responseText;
-        } else if ( 
-            (response.status >= 100 && response.status < 200) || 
-            response.status > 200
-          ) {
-            return (responseText) ? responseText : 'ERROR: no data returned';
-        } else {
-          callback('', `ERROR: File ${file} - Response code: ${response.status}`);
-          throw new Error('Something went wrong on api server!');
-        }
-      })
-      .then(responseText => {
-        callback(file, responseText.split('\n')[0]);
-      })
-      .catch( (error) => {
-        console.error(error);
-        callback(file, `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
-      });
-  },
-
-  // callback getMeta
-  getMeta: function (response, domain, protocol) {
-    // forEach loop context variables: file, domain, protocol
-
-    debugger;
-
-    const file = protocol + domain + '/ads.txt';
-
-    console.log(`AdTechWatch siteMetas process fetch getMeta: `);
-    console.log(file);
-    console.table(response);
-
-    // keep stats of all sites
-    siteMetas.add(domain, protocol, {
-      headers: response.headers,
-      ok: response.ok,
-      redirected: response.redirected,
-      status: response.status,
-      statusText: response.statusText,
-      type: response.type,
-      url: response.url,
-      filepath: file,
-    });
-
-    return response;
-  }, //callback getMeta
-
-  // callback handleStatus
-  handleStatus: function (fileContent, res) {
-    console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
-    console.table(res);
-
-    debugger;
-
-    if (res.ok) { // [200 .. 299]
-      res.content = fileContent.split('\n')[0];
-      res.pass = true;
-    } else if (res.redirected) {
-      //TODO see if filecontent is passed when redirected
-      let content = (fileContent) ? fileContent.split('\n')[0] : '';
-      res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
-    } else {
-      res.content = `ERROR: ${res.status} ${res.statusText}`;
-    }
-  }, //callback handleStatus
-
-  
-  /**
    * Fetch information of a site - all protocols
   @param site object
    */
   process: function (domain) {
     console.log(`AdTechWatch siteMetas process: ${domain} `);
+
+    // callback getMeta
+    function getMeta(response, domain, protocol) {
+      // forEach loop context variables: file, domain, protocol
+
+      debugger;
+
+      const file = protocol + domain + '/ads.txt';
+
+      console.log(`AdTechWatch siteMetas process fetch getMeta: `);
+      console.log(file);
+      console.table(response);
+
+      // keep stats of all sites
+      siteMetas.add(domain, protocol, {
+        headers: response.headers,
+        ok: response.ok,
+        redirected: response.redirected,
+        status: response.status,
+        statusText: response.statusText,
+        type: response.type,
+        url: response.url,
+        filepath: file,
+      });
+
+      return response;
+    } //callback getMeta
+
+    // callback handleStatus
+    function handleStatus(fileContent, res) {
+      console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
+      console.table(res);
+
+      debugger;
+
+      if (res.ok) { // [200 .. 299]
+        res.content = fileContent.split('\n')[0];
+        res.pass = true;
+      } else if (res.redirected) {
+        //TODO see if filecontent is passed when redirected
+        let content = (fileContent) ? fileContent.split('\n')[0] : '';
+        res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
+      } else {
+        res.content = `ERROR: ${res.status} ${res.statusText}`;
+      }
+    } //callback handleStatus
 
     this.protocols.forEach((protocol) => {
 
@@ -180,9 +140,9 @@ var siteMetas = {
           redirect: "follow",
           //referrer: "no-referrer"
         })
-        .then(response => this.getMeta(response, domain, protocol))
+        .then(response => getMeta(response, domain, protocol))
         .then(response => response.text())
-        .then(fileContent => this.handleStatus(fileContent, this.sites[domain][protocol].results))
+        .then(fileContent => handleStatus(fileContent, this.sites[domain][protocol].results))
         .catch((error) => {
 
           debugger;

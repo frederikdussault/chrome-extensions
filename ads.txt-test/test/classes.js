@@ -1,4 +1,4 @@
-/*! ads.txt-watch-tool - v1.0.2 - 2018-11-02 */
+/*! ads.txt-watch-tool - v1.0.2 - 2018-11-05 */
 
 /* ====================================
  * Source: src/data/sites.js
@@ -173,57 +173,97 @@ var siteMetas = {
   },
 
   /**
+   * Fetch a single sites -- from 1.2.4
+   */
+  fetchSite: function (site, callback) {
+    let file = site + '/ads.txt',
+        res = {};  // gather information in case it errors out - for catch.
+    console.log(file);
+
+    const myRequest = new Request(file, {"cache":"no-cache", "redirect":"follow"});
+
+    // get file content and add results to result table
+    fetch(myRequest)
+      .then(response => {
+        console.table(response);
+
+        res = response;
+        const responseText = response.text();
+
+        if (response.status === 200) {
+          return responseText;
+        } else if ( 
+            (response.status >= 100 && response.status < 200) || 
+            response.status > 200
+          ) {
+            return (responseText) ? responseText : 'ERROR: no data returned';
+        } else {
+          callback('', `ERROR: File ${file} - Response code: ${response.status}`);
+          throw new Error('Something went wrong on api server!');
+        }
+      })
+      .then(responseText => {
+        callback(file, responseText.split('\n')[0]);
+      })
+      .catch( (error) => {
+        console.error(error);
+        callback(file, `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
+      });
+  },
+
+  // callback getMeta
+  getMeta: function (response, domain, protocol) {
+    // forEach loop context variables: file, domain, protocol
+
+    debugger;
+
+    const file = protocol + domain + '/ads.txt';
+
+    console.log(`AdTechWatch siteMetas process fetch getMeta: `);
+    console.log(file);
+    console.table(response);
+
+    // keep stats of all sites
+    siteMetas.add(domain, protocol, {
+      headers: response.headers,
+      ok: response.ok,
+      redirected: response.redirected,
+      status: response.status,
+      statusText: response.statusText,
+      type: response.type,
+      url: response.url,
+      filepath: file,
+    });
+
+    return response;
+  }, //callback getMeta
+
+  // callback handleStatus
+  handleStatus: function (fileContent, res) {
+    console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
+    console.table(res);
+
+    debugger;
+
+    if (res.ok) { // [200 .. 299]
+      res.content = fileContent.split('\n')[0];
+      res.pass = true;
+    } else if (res.redirected) {
+      //TODO see if filecontent is passed when redirected
+      let content = (fileContent) ? fileContent.split('\n')[0] : '';
+      res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
+    } else {
+      res.content = `ERROR: ${res.status} ${res.statusText}`;
+    }
+  }, //callback handleStatus
+
+  
+  /**
    * Fetch information of a site - all protocols
   @param site object
    */
   process: function (domain) {
     console.log(`AdTechWatch siteMetas process: ${domain} `);
-
-    // callback getMeta
-    function getMeta(response, domain, protocol) {
-      // forEach loop context variables: file, domain, protocol
-
-      debugger;
-
-      const file = protocol + domain + '/ads.txt';
-
-      console.log(`AdTechWatch siteMetas process fetch getMeta: `);
-      console.log(file);
-      console.table(response);
-
-      // keep stats of all sites
-      siteMetas.add(domain, protocol, {
-        headers: response.headers,
-        ok: response.ok,
-        redirected: response.redirected,
-        status: response.status,
-        statusText: response.statusText,
-        type: response.type,
-        url: response.url,
-        filepath: file,
-      });
-
-      return response;
-    } //callback getMeta
-
-    // callback handleStatus
-    function handleStatus(fileContent, res) {
-      console.log(`AdTechWatch siteMetas process fetch handleStatus: `, fileContent);
-      console.table(res);
-
-      debugger;
-
-      if (res.ok) { // [200 .. 299]
-        res.content = fileContent.split('\n')[0];
-        res.pass = true;
-      } else if (res.redirected) {
-        //TODO see if filecontent is passed when redirected
-        let content = (fileContent) ? fileContent.split('\n')[0] : '';
-        res.content = `REDIRECTED to ${res.url}${(content) ? '\n' : ''}${content}`;
-      } else {
-        res.content = `ERROR: ${res.status} ${res.statusText}`;
-      }
-    } //callback handleStatus
 
     this.protocols.forEach((protocol) => {
 
@@ -237,9 +277,9 @@ var siteMetas = {
           redirect: "follow",
           //referrer: "no-referrer"
         })
-        .then(response => getMeta(response, domain, protocol))
+        .then(response => this.getMeta(response, domain, protocol))
         .then(response => response.text())
-        .then(fileContent => handleStatus(fileContent, this.sites[domain][protocol].results))
+        .then(fileContent => this.handleStatus(fileContent, this.sites[domain][protocol].results))
         .catch((error) => {
 
           debugger;
@@ -368,6 +408,7 @@ var ui = {
   ntestresults: '',
   nStatustext: '',
   nVersiontext: '',
+  currentVersion: '',
 
   init: function (currentVersion, options) {
     this.rowsSelector = options.rowSelector;
@@ -380,7 +421,7 @@ var ui = {
     this.ntestresults   = document.querySelector(options.testresultsSelector);  // TODO 
     this.nStatustext    = document.querySelector(options.statustextSelector);   // TODO 
 
-    this.nVersiontext.value = currentVersion;
+    this.nVersiontext.value = this.currentVersion = currentVersion;
 
     // TODO see if this points to ui, if not use self
     this.nTestbtn.addEventListener('click', () => this.test(siteMetas.processAll));
@@ -434,41 +475,62 @@ var ui = {
       this.ntestresults.removeChild(this.ntestresults.firstChild); // TODO REVISE: make sure this.points to ui
   }, /// reset
 
-  cbAddUiElement: function (name, redirectedTo, data) {
-    let newRow = document.createElement("tr"),
-      status = (data.includes('ERROR:')) ? 'error' : '',
-      version = this.nVersiontext.value,  // TODO REVISE: make sure this.points to ui
-      label = '';
-
-
-    /* validation */
+  getValidationLabels: function (data) {
+    let status;
 
     if (data.includes('ERROR:')) {
       status = 'error';
-      label = 'ERROR';
-    } else if (data.includes('WARNING:')) {
-      status = 'warning';
-      label = 'WARNING';
-    } else if (data.toLowerCase().includes(version.toLowerCase())) {
+    } else if (data.toLowerCase().includes(this.currentVersion.toLowerCase())) {
       status = 'good';
-      label = 'OK';
     } else {
       status = 'warning';
-      label = 'WARNING';
     }
 
-    /* insertion in DOM */
+    return status;
+  },
+
+  statusLabel: function (status) {
+    let label;
+
+    switch (status) {
+      case 'error':
+        label = 'ERROR';
+        break;
+      case 'warning':
+        label = 'WARNING';
+        break;
+      case 'good':
+        label = 'OK';
+        break;
+      default:
+        label = 'WARNING';
+    }
+
+    return label;
+  },
+
+  createNewRow: function (status, label, name, data) {
+    let newRow = document.createElement("tr");
 
     newRow.innerHTML = `    
         <td class="status icon ${ status }">${ label }</td>
-        <td class="site"><a href="${ protocol + name }">${ protocol + name }</a><br><a href="${ altProtocol + name }"><i>${ altProtocol + name }</i></a></td>
+        <td class="site"><a href="${ name }">${ name }</a></td>
         <td class="result ${ status }">${ data }</td>
       `;
-
     newRow.setAttribute('class', (status === 'good') ? 'good' : 'error');
 
+    return newRow;
+  },
+
+  cbAddUiElement: function (name, redirectedTo, data) {
+    let version = this.nVersiontext.value,  // TODO REVISE: make sure this.points to ui
+      label = this.getValidationLabels(data),
+      status = this.statusLabel(label),
+      newRow = this.createNewRow(status, label, name, data);
+
+    /* insertion in DOM */
     // add the newly created element and its content into the DOM 
-    this.ntestresults.appendChild(newRow);  // TODO REVISE: ntestresults is global
+    this.ntestresults.appendChild(newRow);
   }, /// cbAddUiElement
 
   message: function (text, opts) {
