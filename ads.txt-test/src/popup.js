@@ -7,7 +7,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   /* Popup action functions */
-  const extensionVersion = '1.4.1';
+  const extensionVersion = '1.3.1';
   document.querySelector("#extVersion").innerHTML = extensionVersion;
 
   const currentAdstxtVersion = 'v4.1';    
@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
     showAllbtnSelector:'#btnShowAll',
   });
 
-  siteMetas.listall(console.log);
-  siteMetas.processAll();
+  //siteMetas.listall(console.log);
+  //siteMetas.processAll();
+  siteMetas.fetchSite('http://www.1019rock.ca', console.log);
+  siteMetas.fetchSite('https://www.1019rock.ca', console.log);
 
 }); // end document.addEventListener

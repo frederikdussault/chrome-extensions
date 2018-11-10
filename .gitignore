@@ -1,9 +1,8 @@
-<<<<<<< HEAD
-=======
 !wordpress-information
 !redirect-test-ext
 
->>>>>>> 333152e17bc88f81797cc4597c5e286f82b489f1
+**/dist/
+
 **/*-lock.json
 .eslintrc.json
 .vscode
@@ -68,9 +67,3 @@ typings/
 
 # dotenv environment variables file
 .env
-
-!wordpress-information
-<<<<<<< HEAD
-=======
-!redirect-test-ext
->>>>>>> 333152e17bc88f81797cc4597c5e286f82b489f1

@@ -11,6 +11,7 @@ var ui = {
   ntestresults: '',
   nStatustext: '',
   nVersiontext: '',
+  currentVersion: '',
 
   init: function (currentVersion, options) {
     this.rowsSelector = options.rowSelector;
@@ -23,7 +24,7 @@ var ui = {
     this.ntestresults   = document.querySelector(options.testresultsSelector);  // TODO 
     this.nStatustext    = document.querySelector(options.statustextSelector);   // TODO 
 
-    this.nVersiontext.value = currentVersion;
+    this.nVersiontext.value = this.currentVersion = currentVersion;
 
     // TODO see if this points to ui, if not use self
     this.nTestbtn.addEventListener('click', () => this.test(siteMetas.processAll));
@@ -77,50 +78,65 @@ var ui = {
       this.ntestresults.removeChild(this.ntestresults.firstChild); // TODO REVISE: make sure this.points to ui
   }, /// reset
 
-  cbAddUiElement: function (name, redirectedTo, data) {
-
-    //TODO Revise data: new structure is domain.protocol...
-
-    let newRow = document.createElement("tr"),
-      status = (data.includes('ERROR:')) ? 'error' : '',
-      version = this.nVersiontext.value,  // TODO REVISE: make sure this.points to ui
-      label = '';
-
-
-    /* validation */
+  getValidationLabels: function (data) {
+    let status;
 
     if (data.includes('ERROR:')) {
       status = 'error';
-      label = 'ERROR';
-    } else if (data.includes('WARNING:')) {
-      status = 'warning';
-      label = 'WARNING';
-    } else if (data.toLowerCase().includes(version.toLowerCase())) {
+    } else if (data.toLowerCase().includes(this.currentVersion.toLowerCase())) {
       status = 'good';
-      label = 'OK';
     } else {
       status = 'warning';
-      label = 'WARNING';
     }
 
-    /* insertion in DOM */
+    return status;
+  },
+
+  statusLabel: function (status) {
+    let label;
+
+    switch (status) {
+      case 'error':
+        label = 'ERROR';
+        break;
+      case 'warning':
+        label = 'WARNING';
+        break;
+      case 'good':
+        label = 'OK';
+        break;
+      default:
+        label = 'WARNING';
+    }
+
+    return label;
+  },
+
+  createNewRow: function (status, label, name, data) {
+    let newRow = document.createElement("tr");
 
     //TODO Revise data: new structure is domain.protocol... 
     //TODO Will need a loop
     //TODO there is no more altprotocol
     newRow.innerHTML = `    
         <td class="status icon ${ status }">${ label }</td>
-        <td class="site">
-          <a href="${ protocol + name }">${ protocol + name }</a><br>
-          <a href="${ altProtocol + name }"><i>${ altProtocol + name }</i></a>
-        </td>
+        <td class="site"><a href="${ name }">${ name }</a></td>
         <td class="result ${ status }">${ data }</td>
       `;
-
     newRow.setAttribute('class', (status === 'good') ? 'good' : 'error');
 
+    return newRow;
+  },
+
+  cbAddUiElement: function (name, redirectedTo, data) {
+    let version = this.nVersiontext.value,  // TODO REVISE: make sure this.points to ui
+      label = this.getValidationLabels(data),
+      status = this.statusLabel(label),
+      newRow = this.createNewRow(status, label, name, data);
+
+    /* insertion in DOM */
     // add the newly created element and its content into the DOM 
-    this.ntestresults.appendChild(newRow);  // TODO REVISE: ntestresults is global
+    this.ntestresults.appendChild(newRow);
   }, /// cbAddUiElement
 
   message: function (text, opts) {

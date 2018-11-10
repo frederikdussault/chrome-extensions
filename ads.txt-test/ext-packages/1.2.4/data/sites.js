@@ -1,8 +1,3 @@
-var _sites = [
-'www.wrongsite.ca',
-'www.1019rock.ca'
-];
-
 var sites = [
     'www.educatall.com', 
     'www.1019rock.ca', 
@@ -36,7 +31,6 @@ var sites = [
     'www.country600.com', 
     'www.country933.com', 
     'www.country935.ca', 
-    'dinnertelevision.ca', 
     'edmonton.citynews.ca', 
     'www.educatout.com', 
     'www.flare.com', 
