@@ -115,6 +115,9 @@ var ui = {
   createNewRow: function (status, label, name, data) {
     let newRow = document.createElement("tr");
 
+    //TODO Revise data: new structure is domain.protocol... 
+    //TODO Will need a loop
+    //TODO there is no more altprotocol
     newRow.innerHTML = `    
         <td class="status icon ${ status }">${ label }</td>
         <td class="site"><a href="${ name }">${ name }</a></td>

@@ -273,6 +273,8 @@ var siteMetas = {
       var res = this.deft; // assign default values
       console.log(`AdTechWatch siteMetas process: ${file} `);
 
+      //TODO see ads.txt-test\ext-packages\1.2.4\popup.js::fetchSite()  That works.
+
       fetch(file, {
           // mode: "no-cors", // mode in extension is cors
           cache: "no-cache",
@@ -513,6 +515,9 @@ var ui = {
   createNewRow: function (status, label, name, data) {
     let newRow = document.createElement("tr");
 
+    //TODO Revise data: new structure is domain.protocol... 
+    //TODO Will need a loop
+    //TODO there is no more altprotocol
     newRow.innerHTML = `    
         <td class="status icon ${ status }">${ label }</td>
         <td class="site"><a href="${ name }">${ name }</a></td>
