@@ -1,0 +1,26 @@
+Version 4.2
+updated 2018 11 06 14:20
+progagation update
+2018 11 06 9:20 ; 19 hours later
+
+Qty: 80
+Incorrect: 15 ; 19%
+Still precedent version: 6 ; 8%
+
+Status	Site	Result
+WARNING	http://veroniquecloutier.com/ads.txt https://veroniquecloutier.com/ads.txt	#Ads.txt Rogers Digital Media - v4.1 - AdUtility Version
+WARNING	http://www.cityline.tv/ads.txt https://www.cityline.tv/ads.txt	#Ads.txt Rogers Digital Media - v4.1 - AdUtility Version
+WARNING	http://www.country1011.com/ads.txt https://www.country1011.com/ads.txt	#Ads.txt Rogers Digital Media - v4.1 - AdUtility Version
+WARNING	http://www.country1043.com/ads.txt https://www.country1043.com/ads.txt	#Ads.txt Rogers Digital Media - v4.1 - AdUtility Version
+WARNING	http://www.country933.com/ads.txt https://www.country933.com/ads.txt	#Ads.txt Rogers Digital Media - v4.1 - AdUtility Version
+WARNING	http://www.country935.ca/ads.txt https://www.country935.ca/ads.txt	#Ads.txt Rogers Digital Media - v4.1 - AdUtility Version
+
+WARNING	http://www.educatout.com/ads.txt https://www.educatout.com/ads.txt	google.com, pub-0942427266003794, RESELLER, f08c47fec0942fa0
+WARNING	http://www.parfaitemamancinglante.com/ads.txt https://www.parfaitemamancinglante.com/ads.txt	google.com, pub-0942427266003794, RESELLER, f08c47fec0942fa0
+WARNING	http://www.tsisports.ca/ads.txt https://www.tsisports.ca/ads.txt	districtm.io, 100941, DIRECT
+WARNING	http://www.educatall.com/ads.txt https://www.educatall.com/ads.txt	
+WARNING	http://www.citytv.com/ads.txt https://www.citytv.com/ads.txt	
+WARNING	http://www.weather.com/ads.txt https://www.weather.com/ads.txt	#us
+WARNING	http://www.halifaxtoday.ca/ads.txt https://www.halifaxtoday.ca/ads.txt	google.com, pub-0942427266003794, RESELLER, f08c47fec0942fa0
+WARNING	http://www.kitchenertoday.com/ads.txt https://www.kitchenertoday.com/ads.txt	google.com, pub-0942427266003794, RESELLER, f08c47fec0942fa0
+WARNING	http://www.ottawamatters.com/ads.txt https://www.ottawamatters.com/ads.txt	google.com, pub-0942427266003794, RESELLER, f08c47fec0942fa0

@@ -1,4 +1,4 @@
-/*! ads.txt-watch-tool - v1.0.2 - 2018-11-05 */
+/*! ads.txt-watch-tool - v1.0.2 - 2018-11-20 */
 
 /* ====================================
  * Source: src/data/sites.js
@@ -169,11 +169,13 @@ var siteMetas = {
     //TODO convert to promiseAll and trigger processFinished event
     this.sites.forEach((domain) => {
       this.process(domain);
-    });
+    }, this);
   },
 
   /**
    * Fetch a single sites -- from 1.2.4
+   * Works
+   * TODO try to integrate in process()
    */
   fetchSite: function (site, callback) {
     let file = site + '/ads.txt',
@@ -198,16 +200,16 @@ var siteMetas = {
           ) {
             return (responseText) ? responseText : 'ERROR: no data returned';
         } else {
-          callback('', `ERROR: File ${file} - Response code: ${response.status}`);
-          throw new Error('Something went wrong on api server!');
+          callback('', `ERROR: Nothing returned! - File ${file} - Response code: ${response.status}`);
+          throw new Error('Nothing returned!');
         }
       })
       .then(responseText => {
         callback(file, responseText.split('\n')[0]);
       })
       .catch( (error) => {
-        console.error(error);
-        callback(file, `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
+        //console.table(error);
+        callback(file, `Message: Is ${file} a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
       });
   },
 
@@ -272,10 +274,9 @@ var siteMetas = {
       console.log(`AdTechWatch siteMetas process: ${file} `);
 
       fetch(file, {
-          mode: "no-cors",
+          // mode: "no-cors", // mode in extension is cors
           cache: "no-cache",
-          redirect: "follow",
-          //referrer: "no-referrer"
+          redirect: "follow"
         })
         .then(response => this.getMeta(response, domain, protocol))
         .then(response => response.text())
@@ -298,7 +299,7 @@ var siteMetas = {
         });
 
 
-    }); // forEach
+    }, this); // forEach
 
   }, // process()
 
@@ -604,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const extensionVersion = '1.3.1';
   document.querySelector("#extVersion").innerHTML = extensionVersion;
 
-  const currentAdstxtVersion = 'v4.1';    
+  const currentAdstxtVersion = 'v4.2';
    
   // sitemetas.js - keep stats of all sites
   // siteMetas.init();
@@ -620,9 +621,10 @@ document.addEventListener('DOMContentLoaded', () => {
     showAllbtnSelector:'#btnShowAll',
   });
 
-  //siteMetas.listall(console.log);
-  //siteMetas.processAll();
   siteMetas.fetchSite('http://www.1019rock.ca', console.log);
   siteMetas.fetchSite('https://www.1019rock.ca', console.log);
+
+  //siteMetas.listall(console.log);
+  siteMetas.processAll();
 
 }); // end document.addEventListener

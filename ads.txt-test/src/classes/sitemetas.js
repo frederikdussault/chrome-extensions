@@ -72,11 +72,13 @@ var siteMetas = {
     //TODO convert to promiseAll and trigger processFinished event
     this.sites.forEach((domain) => {
       this.process(domain);
-    });
+    }, this);
   },
 
   /**
    * Fetch a single sites -- from 1.2.4
+   * Works
+   * TODO try to integrate in process()
    */
   fetchSite: function (site, callback) {
     let file = site + '/ads.txt',
@@ -101,16 +103,16 @@ var siteMetas = {
           ) {
             return (responseText) ? responseText : 'ERROR: no data returned';
         } else {
-          callback('', `ERROR: File ${file} - Response code: ${response.status}`);
-          throw new Error('Something went wrong on api server!');
+          callback('', `ERROR: Nothing returned! - File ${file} - Response code: ${response.status}`);
+          throw new Error('Nothing returned!');
         }
       })
       .then(responseText => {
         callback(file, responseText.split('\n')[0]);
       })
       .catch( (error) => {
-        console.error(error);
-        callback(file, `Message: Is it a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
+        //console.table(error);
+        callback(file, `Message: Is ${file} a valid URL?<br>ERROR: ${error.name}: <b>${error.message}</b>;<br>Response code: <b>${res.status}</b>`);
       });
   },
 
@@ -175,10 +177,9 @@ var siteMetas = {
       console.log(`AdTechWatch siteMetas process: ${file} `);
 
       fetch(file, {
-          mode: "no-cors",
+          // mode: "no-cors", // mode in extension is cors
           cache: "no-cache",
-          redirect: "follow",
-          //referrer: "no-referrer"
+          redirect: "follow"
         })
         .then(response => this.getMeta(response, domain, protocol))
         .then(response => response.text())
@@ -201,7 +202,7 @@ var siteMetas = {
         });
 
 
-    }); // forEach
+    }, this); // forEach
 
   }, // process()
 
