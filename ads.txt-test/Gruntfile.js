@@ -78,6 +78,31 @@ module.exports = function (grunt) {
                 }
             }
         },
+        
+        /** 
+         * manage version tagging
+         */
+        version: {
+            maj: {
+                options: {
+                    release: 'major'
+                },
+                src: ['package.json']
+            },
+            min: {
+                options: {
+                    release: 'minor'
+                },
+                src: ['package.json']
+            },
+            pat: {
+                options: {
+                    release: 'patch'
+                },
+                src: ['package.json']
+            },
+        },
+        
         // copy but does not clean files (remove obsolete)
         copy: {
             html: {
@@ -109,6 +134,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-newer');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-version');
 
     grunt.registerTask('build', [
         'newer:eslint', 'concat:scripts', 'sass:build', 'copy'

@@ -1,4 +1,4 @@
-/*! ads.txt-watch-tool - v1.2.4.5 - 2019-03-16 */
+/*! ads.txt-watch-tool - v1.2.5 - 2019-03-16 */
 
 /* ====================================
  * Source: src/data/sites.js

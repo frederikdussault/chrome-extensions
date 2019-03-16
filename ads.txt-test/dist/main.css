@@ -35,39 +35,28 @@ table {
   width: 760px;
   text-align: left;
   margin: 0; }
-
-table th {
-  padding: 0.75rem 1rem;
-  background-color: black;
-  color: white;
-  font-size: 0.75rem; }
-
-table td {
-  padding: 1rem; }
-
-td.error {
-  color: red; }
-
-table .status {
-  text-align: center;
-  width: 25px; }
-
-table td.error {
-  color: red; }
-
-table .hidden {
-  display: none; }
-
-table .icon.good {
-  background-color: green;
-  color: white; }
-
-table .icon.warning {
-  background-color: yellow;
-  color: black; }
-
-table .icon.error {
-  background-color: red;
-  color: white; }
+  table th {
+    padding: 0.75rem 1rem;
+    background-color: black;
+    color: white;
+    font-size: 0.75rem; }
+  table td {
+    padding: 1rem; }
+    table td.error {
+      color: red; }
+  table .status {
+    text-align: center;
+    width: 25px; }
+  table .hidden {
+    display: none; }
+  table .icon.good {
+    background-color: green;
+    color: white; }
+  table .icon.warning {
+    background-color: yellow;
+    color: black; }
+  table .icon.error {
+    background-color: red;
+    color: white; }
 
 /*# sourceMappingURL=main.css.map */
