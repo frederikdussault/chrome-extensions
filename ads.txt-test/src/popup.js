@@ -1,5 +1,8 @@
 /* eslint no-unused-vars: 0 */
 
+
+
+
 // This extension inject a script in the current tab. Script from which we will fetch information from the DOM.
 // The user can select from the testrules which information he wants for the
 // current.
@@ -8,21 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Popup action functions */
 
   const currentVersion = 'v4.5',
+        nExtVersion = document.querySelector('#ExtVersion'),
+        version = '1.3.10',
+        nVersiontext = document.querySelector('#versiontext'),
         nTestbtn = document.querySelector('#btnGoTest'),
         nShowErrorsbtn = document.querySelector('#btnShowErrors'),
         nShowGoodbtn = document.querySelector('#btnShowGood'),
         nShowAllbtn = document.querySelector('#btnShowAll'),
         ntestresults = document.querySelector('#testresults'),
         nStatustext = document.querySelector('#statustext'),
-        nVersiontext = document.querySelector('#versiontext'),
         protocol = 'http://',
         altProtocol = 'https://';
   
   nVersiontext.value = currentVersion;
+  nExtVersion.innerHTML = version;
   nTestbtn.addEventListener( 'click', () => test() );
   nShowErrorsbtn.addEventListener( 'click', () => hideRows('good') );
   nShowGoodbtn.addEventListener( 'click', () => hideRows('error') );
   nShowAllbtn.addEventListener( 'click', () => showAll() );
+
+  const buster = '?'+Date.now();
 
   function hideRows(type) {
     let rows = document.querySelectorAll('#testresults tr');
@@ -66,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function fetchSite(site, callback) {
     let file = site + '/ads.txt';
-    const myRequest = new Request(protocol+file);
+    const myRequest = new Request(protocol+file+buster);
     var res = {};
 
     console.log(file);
@@ -126,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     newRow.innerHTML = `    
     <td class="status icon ${ status }">${ label }</td>
-    <td class="site"><a href="${ protocol + name }">${ protocol + name }</a><br><a href="${ altProtocol + name }"><i>${ altProtocol + name }</i></a></td>
+    <td class="site"><a href="${ protocol + name + buster }">${ protocol + name }</a><br><a href="${ altProtocol + name + buster }"><i>${ altProtocol + name }</i></a></td>
     <td class="result ${ status }">${ data }</td>
   `;
 
