@@ -62,6 +62,15 @@ module.exports = function (grunt) {
             styles: {},
             styles_test: {},
         },
+
+        /**  
+        * clean
+        */
+        clean: {
+            dev: ['dist']
+        },
+
+
         sass: {
             options: {
                 implementation: sass,
@@ -87,19 +96,19 @@ module.exports = function (grunt) {
                 options: {
                     release: 'major'
                 },
-                src: ['package.json']
+                src: ['package.json', 'src/manifest.json', 'src/popup.js']
             },
             min: {
                 options: {
                     release: 'minor'
                 },
-                src: ['package.json']
+                src: ['package.json', 'src/manifest.json', 'src/popup.js']
             },
             pat: {
                 options: {
                     release: 'patch'
                 },
-                src: ['package.json']
+                src: ['package.json', 'src/manifest.json', 'src/popup.js']
             },
         },
         
@@ -137,7 +146,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-version');
 
     grunt.registerTask('build', [
-        'newer:eslint', 'concat:scripts', 'sass:build', 'copy'
+        'clean', 'newer:eslint', 'concat:scripts', 'sass:build', 'copy'
     ]);
     grunt.registerTask('test', [
         'build', 'concat:scripts_test', 'sass:test', 'watch'
