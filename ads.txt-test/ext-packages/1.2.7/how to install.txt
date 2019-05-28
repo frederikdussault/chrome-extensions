@@ -1,0 +1,19 @@
+HOW TO INSTALL THE EXTENSION IN GOOGLE CHROME?
+
+A) Unzip the archive
+
+B) Drag & Drop - the .crx on to the 'Extensions' page.
+  1) Settings-Icon > Tools > Extensions
+    ( the 'three horizontal-bars' icon in the top-right corner )
+     or just type chrome://extensions/ in the address bar
+
+  2) Drag and drop the "crx" extension file onto the Extensions page from [step 1]
+     ( .crx file should likely be in your Downloads directory )
+
+  3) Install
+  
+C) to acccess the code
+  1) in chrome://extensions/ 
+  2) select the extension you want to review the code
+  3) click Details button
+  4) scroll down to source section and click the path link
