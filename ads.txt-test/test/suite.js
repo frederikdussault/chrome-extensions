@@ -1,4 +1,4 @@
-/*! ads.txt-watch-tool - v1.0.2 - 2018-11-07 */
+/*! ads.txt-watch-tool - v1.3.9 - 2019-03-16 */
 
 /* ====================================
  * Source: test/js/classes/utils.js

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Popup action functions */
 
-  const currentVersion = 'v4.3',
+  const currentVersion = 'v4.5',
         nTestbtn = document.querySelector('#btnGoTest'),
         nShowErrorsbtn = document.querySelector('#btnShowErrors'),
         nShowGoodbtn = document.querySelector('#btnShowGood'),

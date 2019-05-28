@@ -1,4 +1,6 @@
-body {width: 780px;padding: 10px;margin: 0;}
+body {
+    width: 780px;padding: 10px;margin: 0;
+}
 
 /* parent container is a flex box */
 #container {
@@ -9,22 +11,18 @@ body {width: 780px;padding: 10px;margin: 0;}
     margin: 0;
     padding: 0;
 }
-
-header {
-    margin: 0;
-    padding: 1rem 0;
-
-    h1 {
-        margin: 0 0 10px;
-    }
-    .version {
-        margin: 0;
-        font-size: 11px;
-        color: #767676;
-    }
-}
 .container {
     margin: 10px 0px;
+}
+
+header {
+    h1 {
+        margin-bottom: 0;
+    }
+    h6 {
+        margin-top: 0.3rem;
+        font-size: 0.7rem;
+    }
 }
 
 label {
@@ -57,18 +55,26 @@ table {
         color: white;
         font-size: 0.75rem;
     }
-
     td {
         padding:  1rem;
+        &.error { color: red; }
     }
 
-    .error { color: red; }
-    .status { text-align: center;width: 25px; }
+    .status {text-align: center;width: 25px;}
     .site {}
     .result {}
-
     .hidden { display: none; }
-    .icon.good { background-color: green; color: white; }
-    .icon.warning { background-color: yellow; color: black; }
-    .icon.error { background-color: red; color: white; }
+
+    .icon {
+        &.good { 
+            background-color: green; color: white;
+        }
+        &.warning {
+            background-color: yellow; color: black;
+        }
+        &.error {
+            background-color: red; color: white;
+        }
+    }
 }
+
