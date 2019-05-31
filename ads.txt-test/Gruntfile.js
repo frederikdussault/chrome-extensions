@@ -121,10 +121,24 @@ module.exports = function (grunt) {
                 flatten: true,
                 filter: 'isFile',
             },
+            scripts: {
+                expand: true,
+                src: ['src/scripts/**'],
+                dest: 'dist/scripts/',
+                flatten: true,
+                filter: 'isFile',
+            },
+            assets: {
+                expand: true,
+                src: ['src/assets/**'],
+                dest: 'dist/assets/',
+                flatten: true,
+                filter: 'isFile',
+            },
         },
         watch: {
             scripts: {
-                files: ['<%= eslint.target %>', 'src/*'],
+                files: ['<%= eslint.target %>', 'src/**/*.js'],
                 tasks: ['newer:eslint', 'concat', 'copy']
             },
             styles: {

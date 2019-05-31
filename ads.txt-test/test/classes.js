@@ -1,13 +1,11 @@
-/*! ads.txt-watch-tool - v1.3.9 - 2019-03-16 */
+/*! ads.txt-watch-tool - v1.3.10 - 2019-05-31 */
 
 /* ====================================
  * Source: src/data/sites.js
  * ==================================== */
 
-/* eslint no-unused-vars: 0 */
-
 var sites = [
-    'educatall.com', 
+    // O&O
     '1019rock.ca', 
     '1053rock.ca', 
     '1061chez.ca', 
@@ -26,7 +24,6 @@ var sites = [
     'btmontreal.ca', 
     'bttoronto.ca', 
     'btvancouver.ca', 
-    'chatelaine.com', 
     'chfi.com', 
     'chymfm.com', 
     'cityline.tv', 
@@ -40,11 +37,6 @@ var sites = [
     'country933.com', 
     'country935.ca', 
     'edmonton.citynews.ca', 
-    'educatout.com', 
-    'flare.com', 
-    'fr.chatelaine.com', 
-    'fxnowcanada.ca', 
-    'halifaxtoday.ca', 
     'jack1023.com', 
     'jack923.com', 
     'jack929.com', 
@@ -56,7 +48,7 @@ var sites = [
     'kiss1077.ca', 
     'kiss917.com', 
     'kiss925.com', 
-    'kiss959.com', 
+    '959chfm.com', //'kiss959.com', 
     'kissnorthbay.com', 
     'kissottawa.com', 
     'kissradio.ca', 
@@ -65,30 +57,47 @@ var sites = [
     'kisstimmins.com', 
     'kitchenertoday.com', 
     'krock1057.ca', 
-    'macleans.ca', 
-    'moneysense.ca', 
     'montreal.citynews.ca', 
     'mountainfm.ca', 
     'mountainfm.com', 
     'mymcmurray.com', 
     'news957.com', 
     'ocean985.com', 
-    'oln.ca', 
     'omnitv.ca', 
+    'sonic1029.com', 
+    'sportsnet.ca',
+    'starfm.com', 
+    'toronto.citynews.ca', 
+    'winnipeg.citynews.ca', 
+    'worldfm.ca',
+    // publishing
+    'chatelaine.com', 
+    'flare.com', 
+    'fr.chatelaine.com', 
+    'macleans.ca', 
+    'moneysense.ca', 
+    'todaysparent.com', 
+    // partners
+    'concoursconcours.com',
+    'concoursweb.com',
+    'doubleauto.com',
+    'educatall.com', 
+    'educatout.com', 
+    'www.ellecanada.com', 
+    'www.ellequebec.com', 
+    'fxnowcanada.ca', 
+    'halifaxtoday.ca', 
+    'oln.ca', 
     'ottawamatters.com', 
     'parfaitemamancinglante.com',
     'www.magicmaman.com',
     'www.lactualite.com',
     'www.marieclaire.fr',
-    'sonic1029.com', 
-    'sportsnet.ca',
-    'starfm.com', 
-    'todaysparent.com', 
-    'toronto.citynews.ca', 
     'tsisports.ca', 
     'veroniquecloutier.com', 
-    'weather.com', 
-    'winnipeg.citynews.ca', 
-    'worldfm.ca'
+    'weather.com',
+    'www.zonenordiques.com',
+    'www.goexposgo.com',
+    'www.passionmlb.com',
     ];
     

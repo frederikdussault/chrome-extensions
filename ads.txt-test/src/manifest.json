@@ -1,8 +1,8 @@
 {
-  "name": "Ads.txt Watch Tool",
-  "short_name": "Ads.txt Watch Tool",
-  "description": "This extension allows AdTech to verify the presence and version of ads.txt file on a list of servers. Update: watching v4.3",
-  "version": "1.3.10",
+  "name": "Ads.txt Watch Tool 1.2.7",
+  "short_name": "Ads.txt Watch Tool 1.2.7",
+  "description": "This extension allows AdTech to verify the presence and version of ads.txt file on a list of servers. Update: watching v4.5",
+  "version": "1.2.7",
 
   "icons": {
     "16": "icon.png",
@@ -19,7 +19,7 @@
   },
   
   "browser_action": {
-    "default_title": "Ads.txt Watch Tool",
+    "default_title": "Ads.txt Watch Tool 1.2.7",
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },

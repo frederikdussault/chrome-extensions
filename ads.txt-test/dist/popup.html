@@ -1,49 +1,45 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>AdTech Ads.txt Watch Tool</title>
-  <link rel="stylesheet" href="main.css">
+  <head><title>AdTech Ads.txt Watch Tool</title></head>
+  <link rel="stylesheet" href="assets/style.css">
 </head>
-
 <body>
   <div id="container">
-    <header>
       <h1>AdTech Ads.txt Watch Tool - popup</h1>
-      <h6>Version <span id="ExtVersion"></span></h6>
-    </header>
 
-    <div id="statustext" class="container"></div>
+      <div id="statustext" class="container"></div>
 
-    <div class="container">
-      <label for="versiontext">Version identifier <input type="text" name="versiontext" id="versiontext"></label>
-    </div>
+      <div class="container">
+        <label for="versiontext">Version identifier <input type="text" name="versiontext" id="versiontext"></label>
+      </div>
 
-    <div class="container">
-      <button id="btnGoTest">Start test</button>
-      <button id="btnShowErrors">Hide good ones</button>
-      <button id="btnShowGood">Good ones only</button>
-      <button id="btnShowAll">Show all</button>
-    </div>
+      <div class="container">
+        <button id="btnGoTest">Start test</button>    
+        <button id="btnShowErrors">Hide good ones</button>
+        <button id="btnShowGood">Good ones only</button>
+        <button id="btnShowAll">Show all</button>
+      </div>
 
-    <div id="tests" class="container">
-      <h2 class='row'>Test Results</h2>
+      <div id="tests" class="container">
+        <h2 class='row'>Test Results</h2>
 
-      <table>
-        <thead>
-          <tr>
-            <th class="status">Status</th>
-            <th class="site">Site</th>
-            <th class="result">Result</th>
-          </tr>
-        </thead>
-        <tbody id="testresults">
-        </tbody>
-      </table>
-    </div>
+        <table>
+          <thead>
+            <tr>
+              <th class="status">Status</th>
+              <th class="site">Site</th>
+              <th class="result">Result</th>
+            </tr>
+          </thead>
+          <tbody id="testresults">
+          </tbody>
+        </table>
+      </div>
 
   </div>
 </body>
-<script src="popup.js"></script>
-
+<script src="data/sites.js"></script>
+<script src="scripts/fetchworker.js"></script>
+<script src="scripts/popup.js"></script>
 </html>
