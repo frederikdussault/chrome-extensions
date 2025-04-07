@@ -15,6 +15,6 @@
     "load-grunt-tasks": "^5.1.0"
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^5.1.0"
   }
 }
